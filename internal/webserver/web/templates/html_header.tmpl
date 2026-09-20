@@ -61,6 +61,7 @@
     {{ if .CustomContent.UseCustomCss }}
          <link  href="./custom/custom.v{{.CustomContent.Version}}.css" rel="stylesheet">
     {{ end }}
+         <link  href="./branding.css" rel="stylesheet">
          <script src="./js/min/end2end_download.min.{{ template "js_e2eversion"}}.js"></script>
 {{end}}
   </head>
@@ -90,6 +91,9 @@
             {{ end }}
             {{ if .ActiveUser.HasPermissionManageLogs }}
             <a class="nav-link {{ if eq .ActiveView 1 }}active{{ end }}" href="./logs">Status</a>
+            {{ end }}
+            {{ if .ActiveUser.IsSuperAdmin }}
+            <a class="nav-link {{ if eq .ActiveView 5 }}active{{ end }}" href="./branding">Appearance</a>
             {{ end }}
             {{ if .IsLogoutAvailable }}<a class="nav-link" href="#" onclick="doLogout()">Logout</a>{{ end }}
           </nav>
