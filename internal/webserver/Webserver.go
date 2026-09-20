@@ -574,6 +574,10 @@ func showDownload(w http.ResponseWriter, r *http.Request) {
 		Name:               file.Name,
 		Size:               file.Size,
 		Id:                 file.Id,
+		ExpireAt:           file.ExpireAt,
+		DownloadsRemaining: file.DownloadsRemaining,
+		UnlimitedDownloads: file.UnlimitedDownloads,
+		UnlimitedTime:      file.UnlimitedTime,
 		IsDownloadView:     true,
 		EndToEndEncryption: file.Encryption.IsEndToEndEncrypted,
 		PublicName:         config.PublicName,
@@ -730,6 +734,10 @@ type DownloadView struct {
 	Cipher               string
 	PublicName           string
 	BaseUrl              string
+	ExpireAt             int64
+	DownloadsRemaining   int
+	UnlimitedDownloads   bool
+	UnlimitedTime        bool
 	IsFailedLogin        bool
 	IsAdminView          bool
 	IsDownloadView       bool
