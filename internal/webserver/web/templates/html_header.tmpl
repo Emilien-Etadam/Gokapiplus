@@ -67,18 +67,13 @@
   </head>
   <body class="d-flex h-100 text-center text-white bg-dark">
 {{ if .IsAdminView }}
-   {{ if .IsUserTabAvailable }}
-<div style="position:fixed;top:0.5rem;right:0.75rem;z-index:9999;">
-  <span class="badge bg-secondary opacity-75">
-    <i class="bi bi-person-fill"></i> {{.ActiveUser.Name}}
-  </span>
-</div>
-  {{ end }}
-  <div class="d-flex w-100 h-100 p-3 mx-auto flex-column">
-      <header class="masthead mb-auto">
-        <div  style="max-width: 80em;  margin: 0 auto;"  class="inner">
-          <h1>{{.PublicName}}</h1>
-          <nav class="nav nav-masthead justify-content-center">
+  <div class="d-flex w-100 h-100 mx-auto flex-column">
+      <header class="gk-appbar">
+        <a class="gk-appbar__brand" href="./admin">
+          <span class="gk-appbar__mark" aria-hidden="true"><i class="bi bi-box-seam"></i></span>
+          <span class="gk-appbar__name">{{.PublicName}}</span>
+        </a>
+          <nav class="nav nav-masthead gk-appbar__nav">
             <a class="nav-link {{ if eq .ActiveView 0}}active{{ end }}" href="./admin">Upload</a>
             {{ if .ActiveUser.HasPermissionCreateFileRequests }}
             <a class="nav-link {{ if eq .ActiveView 4 }}active{{ end }}" href="./filerequests">File Requests</a>
@@ -95,11 +90,20 @@
             {{ if .ActiveUser.IsSuperAdmin }}
             <a class="nav-link {{ if eq .ActiveView 5 }}active{{ end }}" href="./branding">Appearance</a>
             {{ end }}
-            {{ if .IsLogoutAvailable }}<a class="nav-link" href="#" onclick="doLogout()">Logout</a>{{ end }}
           </nav>
+        <div class="gk-appbar__end">
+          {{ if .EndToEndEncryption }}
+          <span class="badge bg-success"><i class="bi bi-lock-fill"></i> End-to-end encrypted</span>
+          {{ end }}
+          {{ if .IsUserTabAvailable }}
+          <span class="gk-appbar__user"><i class="bi bi-person-fill"></i> {{.ActiveUser.Name}}</span>
+          {{ end }}
+          {{ if .IsLogoutAvailable }}
+          <a class="gk-appbar__logout" href="#" onclick="doLogout()" title="Logout" aria-label="Logout"><i class="bi bi-box-arrow-right"></i></a>
+          {{ end }}
         </div>
       </header>
-  <main style="margin-top: 2rem">
+  <main class="gk-main">
 {{ else }}
   <div class="d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="mb-auto">

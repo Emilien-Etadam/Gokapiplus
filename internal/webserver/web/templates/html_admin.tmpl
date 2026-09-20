@@ -1,5 +1,24 @@
 {{ define "admin" }}{{ template "header" . }}
- 
+
+      <div class="gk-kpirow" id="adminStats">
+        <div class="gk-kpi">
+          <span class="gk-kpi__k">Files online</span>
+          <span class="gk-kpi__v" id="statFileCount">{{ .StatFileCount }}</span>
+        </div>
+        <div class="gk-kpi">
+          <span class="gk-kpi__k">Storage used</span>
+          <span class="gk-kpi__v" id="statStorageUsed">{{ .StatStorageUsed }}</span>
+        </div>
+        <div class="gk-kpi">
+          <span class="gk-kpi__k">Downloads</span>
+          <span class="gk-kpi__v" id="statDownloadCount">{{ .StatDownloadCount }}</span>
+        </div>
+        <div class="gk-kpi">
+          <span class="gk-kpi__k">Expiring in 24h</span>
+          <span class="gk-kpi__v" id="statExpiringSoon">{{ .StatExpiringSoon }}</span>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col">
 		<div id="container" class="card" style="width: 80%">
@@ -111,7 +130,7 @@
 	{{ if not (or .IsPendingDeletion .IsFileRequest) }}	
 		{{ if  or (gt .ExpireAt $.TimeNow) (.UnlimitedTime) }}
 			{{ if or (gt .DownloadsRemaining 0) (.UnlimitedDownloads) }}
-					<tr id="row-{{ .Id }}">
+					<tr id="row-{{ .Id }}" data-expire="{{ if .UnlimitedTime }}0{{ else }}{{ .ExpireAt }}{{ end }}">
 						<td id="cell-name-{{ .Id }}">{{ .Name }}</td>
 						<td data-order="{{ .SizeBytes }}">{{ .Size }}</td>
 				{{ if .UnlimitedDownloads }}
@@ -173,6 +192,7 @@
 	
 	initDropzone();
 	initZipUpload();
+	initAdminStats();
 
 	Dropzone.options.uploaddropzone["maxFilesize"] = {{ .MaxFileSize }};
 	Dropzone.options.uploaddropzone["timeout"] = 1200000;

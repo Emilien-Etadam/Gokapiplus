@@ -742,6 +742,8 @@ function addRow(item) {
     let row = table.insertRow(0);
     item.Id = sanitizeId(item.Id);
     row.id = "row-" + item.Id;
+    // Lu par refreshAdminStats() pour le compteur des expirations proches
+    row.dataset.expire = item.UnlimitedTime ? 0 : item.ExpireAt;
     let cellFilename = row.insertCell(0);
     let cellFileSize = row.insertCell(1);
     let cellRemainingDownloads = row.insertCell(2);
