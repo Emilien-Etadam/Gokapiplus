@@ -21,7 +21,7 @@
 
       <div class="row">
         <div class="col">
-		<div id="container" class="card" style="width: 80%">
+		<div id="container" class="card" style="width: 92%">
 		  <div class="card-body">
 		    <h3 class="card-title">Upload</h3>
 		    <br>
@@ -122,7 +122,8 @@
 						<th scope="col" style="text-align: center;">Stored until</th>
 						<th scope="col" style="text-align: center;">Downloads</th>
 						<th scope="col" style="text-align: center;">ID</th>
-						<th scope="col" style="text-align: center; min-width:13em;">Actions</th>
+						<th scope="col" style="text-align: center; white-space: nowrap;">Status</th>
+						<th scope="col" style="text-align: center; min-width:15em;">Actions</th>
 					</tr>
 				</thead>
 				<tbody id="downloadtable">
@@ -130,7 +131,7 @@
 	{{ if not (or .IsPendingDeletion .IsFileRequest) }}	
 		{{ if  or (gt .ExpireAt $.TimeNow) (.UnlimitedTime) }}
 			{{ if or (gt .DownloadsRemaining 0) (.UnlimitedDownloads) }}
-					<tr id="row-{{ .Id }}" data-expire="{{ if .UnlimitedTime }}0{{ else }}{{ .ExpireAt }}{{ end }}">
+					<tr id="row-{{ .Id }}" data-expire="{{ if .UnlimitedTime }}0{{ else }}{{ .ExpireAt }}{{ end }}" data-remaining="{{ if .UnlimitedDownloads }}-1{{ else }}{{ .DownloadsRemaining }}{{ end }}">
 						<td id="cell-name-{{ .Id }}">{{ .Name }}</td>
 						<td data-order="{{ .SizeBytes }}">{{ .Size }}</td>
 				{{ if .UnlimitedDownloads }}
@@ -146,6 +147,7 @@
 				{{ end }}
 						<td id="cell-downloads-{{ .Id }}">{{ .DownloadCount }}</td>
 						<td><a id="url-href-{{ .Id }}" target="_blank" href="{{ .UrlDownload }}">{{ .Id }}</a>{{ if .IsPasswordProtected }}  <i title="Password protected" class="bi bi-key"></i>{{ end }}</td>
+						<td id="cell-status-{{ .Id }}">{{ with $.FileStatus . }}<span class="badge {{ .Class }}"><span class="gk-dot"></span>{{ .Label }}</span>{{ end }}</td>
 						<td>
 						<div class="btn-toolbar justify-content-end" role="toolbar" >
 						  <div class="btn-group me-2" role="group">
@@ -211,7 +213,7 @@
 	    "responsive": true,
 	    "order": [], // disables initial sorting
 	    "columnDefs": [ {
-		"targets": 6,
+		"targets": 7,
 		"orderable": false
 		} ],
 	    "paging": false,

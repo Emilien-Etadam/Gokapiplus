@@ -314,7 +314,7 @@ footer {
   border-radius: var(--gk-radius);
   overflow: hidden;
   flex-wrap: wrap;
-  width: 80%;
+  width: 92%;
   margin: 0 auto 16px;
 }
 
@@ -381,6 +381,7 @@ footer {
   --bs-btn-padding-y: 5px;
   --bs-btn-padding-x: 14px;
   background-image: var(--gk-sheen);
+  white-space: nowrap;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, .18);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 1px 1px rgba(0, 0, 0, .12);
   transition: filter .12s, background-color .12s, border-color .12s, color .12s;
@@ -980,6 +981,27 @@ tr.no-bottom-border td {
 
 .rounded-pill {
   border-radius: 999px !important;
+}
+
+/* La colonne d'état reste sur une ligne et la barre d'actions ne se replie pas */
+#maintable td[id^="cell-status-"] {
+  white-space: nowrap;
+  text-align: center;
+}
+
+#maintable .btn-toolbar {
+  flex-wrap: nowrap;
+}
+
+/* Pastille d'état : un point de la couleur du texte, comme dans le système */
+.badge .gk-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  margin-right: 5px;
+  vertical-align: middle;
 }
 
 .perm-granted {

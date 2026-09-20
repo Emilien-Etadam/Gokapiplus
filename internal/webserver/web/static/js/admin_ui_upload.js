@@ -742,15 +742,17 @@ function addRow(item) {
     let row = table.insertRow(0);
     item.Id = sanitizeId(item.Id);
     row.id = "row-" + item.Id;
-    // Lu par refreshAdminStats() pour le compteur des expirations proches
+    // Lus par admin_ui_stats.js pour les compteurs et la pastille d'état
     row.dataset.expire = item.UnlimitedTime ? 0 : item.ExpireAt;
+    row.dataset.remaining = item.UnlimitedDownloads ? -1 : item.DownloadsRemaining;
     let cellFilename = row.insertCell(0);
     let cellFileSize = row.insertCell(1);
     let cellRemainingDownloads = row.insertCell(2);
     let cellStoredUntil = row.insertCell(3);
     let cellDownloadCount = row.insertCell(4);
     let cellUrl = row.insertCell(5);
-    let cellButtons = row.insertCell(6);
+    let cellStatus = row.insertCell(6);
+    let cellButtons = row.insertCell(7);
 
     cellFilename.innerText = item.Name;
     cellFilename.id = "cell-name-" + item.Id;
@@ -786,6 +788,9 @@ function addRow(item) {
         cellUrl.appendChild(icon);
     }
 
+    cellStatus.id = "cell-status-" + item.Id;
+    updateRowStatus(row);
+
     cellButtons.appendChild(createButtonGroup(item));
 
 
@@ -795,6 +800,7 @@ function addRow(item) {
     cellStoredUntil.classList.add('newItem');
     cellDownloadCount.classList.add('newItem');
     cellUrl.classList.add('newItem');
+    cellStatus.classList.add('newItem');
     cellButtons.classList.add('newItem');
     cellFileSize.setAttribute('data-order', item.SizeBytes);
 

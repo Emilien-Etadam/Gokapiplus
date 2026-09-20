@@ -51,6 +51,7 @@ function refreshAdminStats() {
         if (expiry > now && expiry <= now + STATS_EXPIRING_SOON_SECONDS) {
             expiringSoon++;
         }
+        updateRowStatus(row);
     }
 
     setStatValue("statFileCount", rows.length);
@@ -81,4 +82,51 @@ function formatStatBytes(bytes) {
         exp++;
     }
     return (bytes / div).toFixed(1) + " " + units[exp] + "B";
+}
+
+// Returns the state of a file from the values carried by its row. The same rules are
+// applied by AdminView.FileStatus on the server side, so a reload shows the same badge.
+// A row is only in the table while the file is downloadable, so "expired" cannot occur.
+function getFileStatus(row) {
+    const now = Math.floor(Date.now() / 1000);
+    const expiry = parseInt(row.dataset.expire, 10) || 0;
+    const remaining = parseInt(row.dataset.remaining, 10);
+    const unlimitedTime = expiry === 0;
+    const unlimitedDownloads = remaining === -1;
+
+    if (!unlimitedTime && expiry - now <= STATS_EXPIRING_SOON_SECONDS) {
+        return { label: "Expires soon", cls: "bg-warning" };
+    }
+    if (!unlimitedDownloads && remaining === 1) {
+        return { label: "Last download", cls: "bg-warning" };
+    }
+    if (unlimitedTime && unlimitedDownloads) {
+        return { label: "Unlimited", cls: "bg-primary" };
+    }
+    return { label: "Active", cls: "bg-success" };
+}
+
+// Writes the badge into the status cell of a row. The cell is only rewritten when the
+// state actually changed, so that watching the table cannot loop.
+function updateRowStatus(row) {
+    const cell = row.querySelector("td[id^='cell-status-']");
+    if (cell == null) {
+        return;
+    }
+    // A row that is still being filled in has no downloads left to read yet
+    if (row.dataset.remaining === undefined) {
+        return;
+    }
+    const status = getFileStatus(row);
+    if (row.dataset.status === status.label) {
+        return;
+    }
+    row.dataset.status = status.label;
+    const badge = document.createElement("span");
+    badge.className = "badge " + status.cls;
+    const dot = document.createElement("span");
+    dot.className = "gk-dot";
+    badge.appendChild(dot);
+    badge.appendChild(document.createTextNode(status.label));
+    cell.replaceChildren(badge);
 }

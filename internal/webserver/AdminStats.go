@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/forceu/gokapi/internal/helper"
+	"github.com/forceu/gokapi/internal/models"
 )
 
 // This file contains the counters shown above the upload box. They are methods on
@@ -51,4 +52,26 @@ func (u *AdminView) StatExpiringSoon() int {
 		}
 	}
 	return result
+}
+
+// fileStatus is the state badge shown in the file table
+type fileStatus struct {
+	Label string
+	Class string
+}
+
+// FileStatus returns the state of a file for the table. Files that have expired or
+// that have no download left are not listed at all, so those states cannot show up
+// here. The same rules are applied in admin_ui_stats.js while the page is open.
+func (u *AdminView) FileStatus(item models.FileApiOutput) fileStatus {
+	if !item.UnlimitedTime && item.ExpireAt-time.Now().Unix() <= int64(expiringSoonWindow.Seconds()) {
+		return fileStatus{Label: "Expires soon", Class: "bg-warning"}
+	}
+	if !item.UnlimitedDownloads && item.DownloadsRemaining == 1 {
+		return fileStatus{Label: "Last download", Class: "bg-warning"}
+	}
+	if item.UnlimitedTime && item.UnlimitedDownloads {
+		return fileStatus{Label: "Unlimited", Class: "bg-primary"}
+	}
+	return fileStatus{Label: "Active", Class: "bg-success"}
 }
