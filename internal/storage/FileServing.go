@@ -813,7 +813,9 @@ func FileExists(file models.File, dataDir string) bool {
 		if !exists {
 			return false
 		}
-		if size == 0 && file.Size != "0 B" {
+		// Compared with the byte count rather than the readable size, which is a
+		// translated string and no longer spells an empty file "0 B"
+		if size == 0 && file.SizeBytes != 0 {
 			return false
 		}
 		return true
