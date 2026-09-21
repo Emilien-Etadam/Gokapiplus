@@ -1302,6 +1302,32 @@ tr.no-bottom-border td {
   color: var(--gk-muted);
 }
 
+/* Envoi en deux colonnes : les réglages à gauche, la zone de dépôt à droite.
+   La zone de dépôt s'étire sur la hauteur des réglages et centre son message. */
+.gk-uploadrow .upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  margin: 0;
+}
+
+.gk-uploadrow .upload-box .dz-message {
+  margin: 0;
+}
+
+/* Les réglages remplissent leur colonne, au lieu de rester centrés sur 34 rem */
+.gk-uploadrow #uploadOptions {
+  margin-bottom: 0;
+  max-width: none;
+}
+
+/* La zone de progression ne prend de la place qu'une fois un envoi commencé */
+#uploadstatus:not(:empty) {
+  margin-top: 1.25rem;
+}
+
 /* Réglages d'envoi en table dense : libellé, interrupteur, valeur */
 .gk-settings {
   max-width: 34rem;
