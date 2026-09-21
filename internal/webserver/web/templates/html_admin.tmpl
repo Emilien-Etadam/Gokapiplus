@@ -26,24 +26,9 @@
 		    <h3 class="card-title">Envoi</h3>
 		    <br>
 		    <p class="card-text">
-		    
-			<form action="./uploadChunk" class="dropzone upload-box text-center w-100" id="uploaddropzone">
-				<div class="dz-message">
-{{ if .EndToEndEncryption }}
-				    <p id="uploadBoxTitle" class="mb-2 fs-5">Veuillez patienter</p>
-				    <p id="uploadBoxSubtitle" class="mb-0 opacity-75">Chargement du chiffrement de bout en bout...</p>
-{{ else }}
-				    <p id="uploadBoxTitle" class="mb-2 fs-5">Glissez-déposez vos fichiers ici</p>
-				    <p id="uploadBoxSubtitle" class="mb-0 opacity-75">ou collez, ou cliquez pour choisir.</p>
-{{ end }}
-				</div>
-			</form>
-		
-		<div id="uploadstatus" class="container uploads-container">
-		</div>		
-		<p></p>
-		
-		<br>
+
+		<div class="row g-4 align-items-stretch gk-uploadrow">
+		  <div class="col-12 col-lg-5">
 		<table class="table gk-settings" id="uploadOptions">
 		  <tbody>
 
@@ -112,6 +97,24 @@
 
 		  </tbody>
 		</table>
+		  </div>
+		  <div class="col-12 col-lg-7 d-flex">
+			<form action="./uploadChunk" class="dropzone upload-box text-center w-100" id="uploaddropzone">
+				<div class="dz-message">
+{{ if .EndToEndEncryption }}
+				    <p id="uploadBoxTitle" class="mb-2 fs-5">Veuillez patienter</p>
+				    <p id="uploadBoxSubtitle" class="mb-0 opacity-75">Chargement du chiffrement de bout en bout...</p>
+{{ else }}
+				    <p id="uploadBoxTitle" class="mb-2 fs-5">Glissez-déposez vos fichiers ici</p>
+				    <p id="uploadBoxSubtitle" class="mb-0 opacity-75">ou collez, ou cliquez pour choisir.</p>
+{{ end }}
+				</div>
+			</form>
+		  </div>
+		</div>
+
+		<div id="uploadstatus" class="container uploads-container"></div>
+
 <div id="errordiv" class="alert alert-danger" style="display:none">
   <span id="errormessage" ></span>
 </div>
