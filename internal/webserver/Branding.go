@@ -166,7 +166,7 @@ func sanitiseBrandingError(errorId string) string {
 	case "background":
 		return "L'image de fond n'a pas pu être enregistrée. Utilisez un fichier PNG, JPG ou WEBP de 5 Mo maximum."
 	case "favicon":
-		return "L'icône de l'onglet n'a pas pu être enregistrée. Utilisez une image PNG carrée de 1 Mo maximum."
+		return "L'icône de l'onglet n'a pas pu être enregistrée. Utilisez une image PNG carrée de 1 Mo et 2048 pixels maximum."
 	case "name":
 		return "Le nom affiché n'a pas pu être enregistré dans la configuration du serveur."
 	case "write":
@@ -494,5 +494,10 @@ func serveBrandingAsset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Cache-Control", "public, max-age=100800") // 2 days, the URL contains a version
+	// An SVG is a document, not just a picture: opened directly, a script inside it would
+	// run in the origin of the server. The sandbox stops that, while the image itself and
+	// its own styling keep working.
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; img-src data:; sandbox")
 	http.ServeFile(w, r, brandingFilePath(fileName))
 }
