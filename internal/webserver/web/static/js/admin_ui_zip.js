@@ -205,7 +205,7 @@ function initZipUpload() {
 
     window.addEventListener("beforeunload", (event) => {
         if (isCompressing) {
-            event.returnValue = "Files are still being compressed. Do you want to close this page?";
+            event.returnValue = "Des fichiers sont encore en cours de compression. Voulez-vous vraiment fermer cette page ?";
         }
     });
 }
@@ -314,8 +314,8 @@ async function zipAndUpload(items) {
 
     const totalSize = zipGetTotalSize(deduplicatedItems);
     if (totalSize > ZIP_MAX_TOTAL_SIZE_BYTES) {
-        zipShowStatusError(statusId, "Error: Selection of " + zipFormatSize(totalSize) +
-            " exceeds the maximum size of " + zipFormatSize(ZIP_MAX_TOTAL_SIZE_BYTES) + " for automatic compression");
+        zipShowStatusError(statusId, "Erreur : la sélection de " + zipFormatSize(totalSize) +
+            " dépasse la taille maximale de " + zipFormatSize(ZIP_MAX_TOTAL_SIZE_BYTES) + " pour la compression automatique");
         return;
     }
 
@@ -335,7 +335,7 @@ async function zipAndUpload(items) {
         dropzoneObject.addFile(archive);
     } catch (error) {
         console.log(error);
-        zipShowStatusError(statusId, "Error while compressing: " + error);
+        zipShowStatusError(statusId, "Erreur pendant la compression : " + error);
     } finally {
         isCompressing = false;
     }
@@ -349,7 +349,7 @@ function zipUpdateStatus(statusId, percentage) {
         return;
     }
     progressBar.style.width = percentage + "%";
-    progressInfo.innerText = "Compression: " + percentage + "%";
+    progressInfo.innerText = "Compression : " + percentage + "%";
 }
 
 function zipShowStatusError(statusId, message) {
@@ -365,5 +365,5 @@ function zipShowGenericError(error) {
     console.log(error);
     const statusId = getUuid();
     addFileStatus(statusId, "Compression");
-    zipShowStatusError(statusId, "Error while reading the selected files: " + error);
+    zipShowStatusError(statusId, "Erreur pendant la lecture des fichiers choisis : " + error);
 }

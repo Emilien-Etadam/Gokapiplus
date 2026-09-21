@@ -95,15 +95,15 @@ function getFileStatus(row) {
     const unlimitedDownloads = remaining === -1;
 
     if (!unlimitedTime && expiry - now <= STATS_EXPIRING_SOON_SECONDS) {
-        return { label: "Expires soon", cls: "bg-warning" };
+        return { label: "Expire bientôt", cls: "bg-warning" };
     }
     if (!unlimitedDownloads && remaining === 1) {
-        return { label: "Last download", cls: "bg-warning" };
+        return { label: "Dernier téléchargement", cls: "bg-warning" };
     }
     if (unlimitedTime && unlimitedDownloads) {
-        return { label: "Unlimited", cls: "bg-primary" };
+        return { label: "Illimité", cls: "bg-primary" };
     }
-    return { label: "Active", cls: "bg-success" };
+    return { label: "Actif", cls: "bg-success" };
 }
 
 // Writes the badge into the status cell of a row. The cell is only rewritten when the

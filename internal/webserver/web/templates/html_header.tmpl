@@ -1,5 +1,5 @@
 {{define "header"}}<!doctype html>
-<html lang="en" class="h-100">
+<html lang="fr" class="h-100">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +16,7 @@
 	<link href="./assets/dist/icons/bootstrap-icons.min.css" rel="stylesheet">
 	<script src="./js/min/all_public.min.js"></script>
 {{ if .IsAdminView }}
-        <title>{{.PublicName}} Admin</title>
+        <title>{{.PublicName}} — Administration</title>
 	<script src="./assets/dist/js/dropzone.min.js?v={{ template "js_dropzone_version"}}"></script>
 	<script src="./assets/dist/js/clipboard.min.js"></script>
 	<script src="./assets/dist/js/datatables.min.js"></script>
@@ -40,12 +40,12 @@
 {{ else }}
    {{ if .IsDownloadView }}
        {{ if .IsPasswordView }}
-          <title>{{.PublicName}}: Password required</title>
+          <title>{{.PublicName}} : mot de passe requis</title>
 	  <meta name="title" content="{{.PublicName}}">
-    	  <meta name="description" content="Password required">
+    	  <meta name="description" content="Mot de passe requis">
     	  
     	  <meta property="og:title" content="{{.PublicName}}"/>
-  	  <meta property="og:description" content="Password required"/>
+  	  <meta property="og:description" content="Mot de passe requis"/>
        {{ else }}
           <title>{{.PublicName}}: {{.Name}}</title>
 	  <meta name="title" content="{{.PublicName}}: {{.Name}}">
@@ -74,32 +74,32 @@
           <span class="gk-appbar__name">{{.PublicName}}</span>
         </a>
           <nav class="nav nav-masthead gk-appbar__nav">
-            <a class="nav-link {{ if eq .ActiveView 0}}active{{ end }}" href="./admin">Upload</a>
+            <a class="nav-link {{ if eq .ActiveView 0}}active{{ end }}" href="./admin">Envoi</a>
             {{ if .ActiveUser.HasPermissionCreateFileRequests }}
-            <a class="nav-link {{ if eq .ActiveView 4 }}active{{ end }}" href="./filerequests">File Requests</a>
+            <a class="nav-link {{ if eq .ActiveView 4 }}active{{ end }}" href="./filerequests">Demandes de fichiers</a>
             {{ end }}
             {{ if and .ActiveUser.HasPermissionManageUsers .IsUserTabAvailable }}
-            <a class="nav-link {{ if eq .ActiveView 3 }}active{{ end }}" href="./users">Users</a>
+            <a class="nav-link {{ if eq .ActiveView 3 }}active{{ end }}" href="./users">Utilisateurs</a>
             {{ end }}
             {{ if .ShowApiMenu }}
             <a class="nav-link {{ if eq .ActiveView 2 }}active{{ end }}" href="./apiKeys">API</a>
             {{ end }}
             {{ if .ActiveUser.HasPermissionManageLogs }}
-            <a class="nav-link {{ if eq .ActiveView 1 }}active{{ end }}" href="./logs">Status</a>
+            <a class="nav-link {{ if eq .ActiveView 1 }}active{{ end }}" href="./logs">État</a>
             {{ end }}
             {{ if .ActiveUser.IsSuperAdmin }}
-            <a class="nav-link {{ if eq .ActiveView 5 }}active{{ end }}" href="./branding">Appearance</a>
+            <a class="nav-link {{ if eq .ActiveView 5 }}active{{ end }}" href="./branding">Apparence</a>
             {{ end }}
           </nav>
         <div class="gk-appbar__end">
           {{ if .EndToEndEncryption }}
-          <span class="badge bg-success"><i class="bi bi-lock-fill"></i> End-to-end encrypted</span>
+          <span class="badge bg-success"><i class="bi bi-lock-fill"></i> Chiffré de bout en bout</span>
           {{ end }}
           {{ if .IsUserTabAvailable }}
           <span class="gk-appbar__user"><i class="bi bi-person-fill"></i> {{.ActiveUser.Name}}</span>
           {{ end }}
           {{ if .IsLogoutAvailable }}
-          <a class="gk-appbar__logout" href="#" onclick="doLogout()" title="Logout" aria-label="Logout"><i class="bi bi-box-arrow-right"></i></a>
+          <a class="gk-appbar__logout" href="#" onclick="doLogout()" title="Déconnexion" aria-label="Déconnexion"><i class="bi bi-box-arrow-right"></i></a>
           {{ end }}
         </div>
       </header>

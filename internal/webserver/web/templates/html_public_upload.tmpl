@@ -6,19 +6,19 @@
     <div class="col-lg-8">
       <div class="card bg-dark text-white">
         <div class="card-body">
-          <h3 class="card-title text-center mb-4">Upload Files</h3>
+          <h3 class="card-title text-center mb-4">Envoyer des fichiers</h3>
 {{ if ne .FileRequest.Notes "" }}
           <div class="info-box">
-            <h6>Note</h6>
+            <h6>Remarque</h6>
             <p class="mb-0">{{.FileRequest.Notes}}</p>
           </div>
 {{ end }}
 {{ if .FileRequest.HasRestrictions }}
           <div class="info-box">
-            <h6>Upload restrictions</h6>
+            <h6>Restrictions d'envoi</h6>
             <ul>
     {{ if not (.FileRequest.IsUnlimitedTime) }}
-              <li>Upload possible until: <strong>
+              <li>Envoi possible jusqu'au : <strong>
                   <span id="expirydate">{{ .FileRequest.Expiry }}</span>
                 </strong>
               </li>
@@ -27,7 +27,7 @@
               </script>
    {{ end }}
    {{ if or (not (.FileRequest.IsUnlimitedSize)) (lt .FileRequest.CombinedMaxSize 5000) }}
-              <li>Maximum file size: <strong>
+              <li>Taille maximale par fichier : <strong>
                   <span id="maxfilesize"></span>
                 </strong>
               </li>
@@ -36,21 +36,21 @@
               </script>
    {{ end }}
        {{ if not (.FileRequest.IsUnlimitedFiles) }}
-              <li>Maximum number of files: <strong>{{ .FileRequest.FilesRemaining }}</strong>
+              <li>Nombre maximal de fichiers : <strong>{{ .FileRequest.FilesRemaining }}</strong>
               </li>
        {{ end }}
             </ul>
           </div>
 {{ end }}
           <label for="fileInput" id="uploadBox" class="upload-box text-center w-100">
-            <p class="mb-2 fs-5">Drag & drop files here</p>
-            <p class="mb-0 opacity-75">or paste or click to select</p>
+            <p class="mb-2 fs-5">Glissez-déposez vos fichiers ici</p>
+            <p class="mb-0 opacity-75">ou collez, ou cliquez pour choisir</p>
             <input type="file" id="fileInput" class="d-none" multiple>
           </label>
           <div id="fileList" class="pu-file-list"></div>
           <div class="text-center mt-4">
             <button class="btn btn-upload-custom" disabled onClick="initUpload();" id="uploadbutton">
-		  Upload Files
+		  Envoyer des fichiers
 	    </button>
           </div>
         </div>
@@ -65,13 +65,13 @@
   <div class="modal-dialog gokapi-dialog">
     <div class="modal-content gokapi-dialog">
       <div class="modal-header">
-        <h2 class="modal-title fs-5" id="errorModalLabel">Unable to upload</h2>
+        <h2 class="modal-title fs-5" id="errorModalLabel">Envoi impossible</h2>
       </div>
       <div class="modal-body">
         <span id="span-modal-error"></span>
       </div>
       <div class="modal-footer">
-        <button type="button" data-bs-dismiss="modal" data-bs-target="#errorModal" class="btn btn-primary">Continue</button>
+        <button type="button" data-bs-dismiss="modal" data-bs-target="#errorModal" class="btn btn-primary">Continuer</button>
       </div>
     </div>
   </div>
@@ -82,10 +82,10 @@
   <div class="modal-dialog gokapi-dialog">
     <div class="modal-content gokapi-dialog">
       <div class="modal-header">
-        <h2 class="modal-title fs-5" id="allUModalLabel">Success</h2>
+        <h2 class="modal-title fs-5" id="allUModalLabel">Terminé</h2>
       </div>
       <div class="modal-body">
-        All files have been successfully uploaded. No further files can be uploaded anymore. You can close this page now.
+        Tous les fichiers ont bien été envoyés. Aucun autre envoi n'est possible. Vous pouvez fermer cette page.
       </div>
       <div class="modal-footer">
       </div>

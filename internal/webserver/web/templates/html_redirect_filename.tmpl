@@ -2,12 +2,12 @@
 <html><head>
 
        {{ if .PasswordRequired }}
-          <title>{{.PublicName}}: Password required</title>
+          <title>{{.PublicName}} : mot de passe requis</title>
 	  <meta name="title" content="{{.PublicName}}">
-    	  <meta name="description" content="Password required">
+    	  <meta name="description" content="Mot de passe requis">
     	  
     	  <meta property="og:title" content="{{.PublicName}}"/>
-  	  <meta property="og:description" content="Password required"/>
+  	  <meta property="og:description" content="Mot de passe requis"/>
        {{ else }}
           <title>{{.PublicName}}: {{.Name}}</title>
 	  <meta name="title" content="{{.PublicName}}: {{.Name}}">
@@ -21,7 +21,7 @@
 
 </head>
 
-<!-- If you are not being redirected, click <a id="redirect" href="./../../{{.RedirectUrl}}?id={{.FileId}}">here</a> -->
+<!-- If you are not being redirected, click <a id="redirect" href="./../../{{.RedirectUrl}}?id={{.FileId}}">ici</a> -->
 
 
 <script>

@@ -3,19 +3,19 @@
         <div class="col">
 		<div id="container" class="card" style="width: 25em">
 		  <div class="card-body">
-		    <h2 class="card-title">Change Password</h2>
+		    <h2 class="card-title">Changer le mot de passe</h2>
 		    <br>
-		    <p class="card-text"> A password change has been requested.<br>Please enter a new password.<br><br>
+		    <p class="card-text"> Un changement de mot de passe a été demandé.<br>Saisissez un nouveau mot de passe.<br><br>
 			<form method="post" action="./changePassword" id="form" name="form" onSubmit="return submitForm()">
 			    <div class="mb-3">
 				<input type="password" class="form-control mx-auto" style="max-width: 300px;" 
-				       required minlength="{{.MinPasswordLength}}" placeholder="New Password" 
+				       required minlength="{{.MinPasswordLength}}" placeholder="Nouveau mot de passe" 
 				       id="newpw" name="newpw" autocomplete="new-password">
 			    </div>
 
 			    <div class="mb-3">
 				<input type="password" class="form-control mx-auto" style="max-width: 300px;" 
-				       required minlength="{{.MinPasswordLength}}" placeholder="Confirm New Password" 
+				       required minlength="{{.MinPasswordLength}}" placeholder="Confirmer le nouveau mot de passe" 
 				       id="newpw_c" name="newpw_c" onchange="checkSame()" autocomplete="new-password">
 			    </div>
 				<input type="hidden" id="csrf-token" name="csrf-token" value="{{.CsrfToken}}">
@@ -25,12 +25,12 @@
 {{ end }}
 
 			    <div id="pwnotsame" class="text-warning" style="display: none; margin-top:1em">
-				Passwords do not match
+				Les mots de passe ne correspondent pas
 			    </div>
 
 			    <div class="mt-4">
 				<button type="submit" id="submitbutton" class="btn btn-primary w-100 mx-auto" style="max-width: 300px;">
-				    Change Password
+				    Changer le mot de passe
 				</button>
 			    </div>
 			</form>

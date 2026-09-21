@@ -65,13 +65,13 @@ type fileStatus struct {
 // here. The same rules are applied in admin_ui_stats.js while the page is open.
 func (u *AdminView) FileStatus(item models.FileApiOutput) fileStatus {
 	if !item.UnlimitedTime && item.ExpireAt-time.Now().Unix() <= int64(expiringSoonWindow.Seconds()) {
-		return fileStatus{Label: "Expires soon", Class: "bg-warning"}
+		return fileStatus{Label: "Expire bientôt", Class: "bg-warning"}
 	}
 	if !item.UnlimitedDownloads && item.DownloadsRemaining == 1 {
-		return fileStatus{Label: "Last download", Class: "bg-warning"}
+		return fileStatus{Label: "Dernier téléchargement", Class: "bg-warning"}
 	}
 	if item.UnlimitedTime && item.UnlimitedDownloads {
-		return fileStatus{Label: "Unlimited", Class: "bg-primary"}
+		return fileStatus{Label: "Illimité", Class: "bg-primary"}
 	}
-	return fileStatus{Label: "Active", Class: "bg-success"}
+	return fileStatus{Label: "Actif", Class: "bg-success"}
 }

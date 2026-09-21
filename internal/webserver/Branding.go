@@ -142,11 +142,11 @@ func showBranding(w http.ResponseWriter, r *http.Request) {
 func sanitiseBrandingError(errorId string) string {
 	switch errorId {
 	case "logo":
-		return "The logo could not be saved. Use a PNG, JPG, WEBP or SVG file of up to 1MB."
+		return "Le logo n'a pas pu être enregistré. Utilisez un fichier PNG, JPG, WEBP ou SVG de 1 Mo maximum."
 	case "background":
-		return "The background could not be saved. Use a PNG, JPG or WEBP file of up to 5MB."
+		return "L'image de fond n'a pas pu être enregistrée. Utilisez un fichier PNG, JPG ou WEBP de 5 Mo maximum."
 	case "write":
-		return "The settings could not be written to disk. Check the permissions of the config folder."
+		return "Les réglages n'ont pas pu être écrits sur le disque. Vérifiez les droits du dossier de configuration."
 	default:
 		return ""
 	}

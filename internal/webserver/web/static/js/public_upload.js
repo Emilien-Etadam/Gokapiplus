@@ -5,7 +5,7 @@ function createUploadBox() {
 
             if (file.size > MAX_FILE_SIZE) {
                 document.getElementById('span-modal-error').innerText =
-                    `The file "${file.name}" exceeds the maximum allowed size of ${formatSize(MAX_FILE_SIZE)}.`;
+                    `Le fichier « ${file.name} » dépasse la taille maximale autorisée de ${formatSize(MAX_FILE_SIZE)}.`;
                 errorModal.show();
                 return;
             }
@@ -21,7 +21,7 @@ function createUploadBox() {
 
             const progressText = document.createElement('span');
             progressText.className = 'upload-status';
-            progressText.textContent = 'Ready';
+            progressText.textContent = 'Prêt';
 
             const progressBar = document.createElement('progress');
             progressBar.className = 'upload-progress';
@@ -39,7 +39,7 @@ function createUploadBox() {
 
             const removeBtn = document.createElement('button');
             removeBtn.type = 'button';
-            removeBtn.title = 'Remove';
+            removeBtn.title = 'Retirer';
             removeBtn.className = 'btn btn-sm btn-link text-light p-0';
             removeBtn.innerHTML = '<i class="bi bi-x-circle"></i>';
             removeBtn.onclick = async () => {
@@ -323,12 +323,12 @@ async function startUpload() {
         let lastSpeedText = "";
 
         try {
-            elements.progressText.textContent = "Reserving...";
+            elements.progressText.textContent = "Réservation...";
             const serverUuid = await reserveChunk(elements);
             entry.serverUuid = serverUuid;
 
             elements.removeBtn.innerHTML = '<i class="bi bi-stop-circle text-danger"></i>';
-            elements.removeBtn.title = "Cancel Upload";
+            elements.removeBtn.title = "Annuler l'envoi";
 
             let offset = 0;
             // do-while so that add chunk is run for 0byte files as well
@@ -383,7 +383,7 @@ async function startUpload() {
                         };
 
                         xhr.onerror = () => {
-                            const err = new Error(`Server Error`);
+                            const err = new Error(`Erreur du serveur`);
                             err.status = xhr.status;
                             reject(err);
                         };
@@ -393,7 +393,7 @@ async function startUpload() {
                 }, {
                     signal: entry.controller.signal,
                     onWait: () => {
-                        elements.progressText.textContent = "Waiting for upload slot...";
+                        elements.progressText.textContent = "En attente d'un créneau d'envoi...";
                     },
                     onRetry: (a, e) => {
                         elements.progressText.textContent = `Retry ${a}/3: ${e.message}${lastSpeedText}`;
@@ -406,7 +406,7 @@ async function startUpload() {
             await finaliseUpload(file, serverUuid, elements);
 
             entry.status = 'completed';
-            elements.progressText.textContent = "Completed";
+            elements.progressText.textContent = "Terminé";
             elements.item.style.opacity = "0.6";
             elements.removeBtn.remove(); // Remove button only on success
 
@@ -427,7 +427,7 @@ async function startUpload() {
             elements.progressBar.style.display = "none";
 
             elements.removeBtn.innerHTML = '<i class="bi bi-trash"></i>';
-            elements.removeBtn.title = "Remove from list";
+            elements.removeBtn.title = "Retirer de la liste";
         }
     }
 }

@@ -14,7 +14,7 @@ function filterLogs(tag) {
 
 function setTrafficInfo(totalTraffic, recordingSince) {
     insertReadableSizeTwoOutputs(totalTraffic, 'totalTraffic', 'totalTrafficUnit');
-    document.getElementById('cardTraffic').title= "Traffic since "+formatUnixTimestamp(recordingSince);
+    document.getElementById('cardTraffic').title= "Trafic depuis "+formatUnixTimestamp(recordingSince);
 }
 
 function setMemoryUsage(used, total) {
@@ -129,7 +129,7 @@ async function loadLogs(timestamp) {
     } catch (error) {
         lastLogUpdate = 0;
         console.error("Failed to load logs:", error);
-        textarea.value = "Error loading logs. See console for details.";
+        textarea.value = "Impossible de charger les journaux. Voir la console pour le détail.";
     }
 }
 
@@ -180,7 +180,7 @@ function deleteLogs() {
     if (cutoff == "none" || cutoff == "") {
         return;
     }
-    if (!confirm("Do you want to delete the selected logs?")) {
+    if (!confirm("Voulez-vous supprimer les journaux sélectionnés ?")) {
         document.getElementById('deleteLogs').selectedIndex = 0;
         return;
     }
@@ -209,14 +209,14 @@ function deleteLogs() {
             location.reload();
         })
         .catch(error => {
-            alert("Unable to delete logs: " + error);
+            alert("Impossible de supprimer les journaux : " + error);
             console.error('Error:', error);
         });
 }
 
 
 function resetTrafficStat() {
-    if (!confirm("Do you want to reset the traffic statistics?")) {
+    if (!confirm("Voulez-vous réinitialiser les statistiques de trafic ?")) {
         return;
     }
 
@@ -225,7 +225,7 @@ function resetTrafficStat() {
             location.reload();
         })
         .catch(error => {
-            alert("Unable to reset stats: " + error);
+            alert("Impossible de réinitialiser les statistiques : " + error);
             console.error('Error:', error);
         });
 }
