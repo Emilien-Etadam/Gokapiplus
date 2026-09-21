@@ -108,7 +108,7 @@ func TestLogin(t *testing.T) {
 		IsHtml:          true,
 		Method:          "POST",
 		ResultCode:      http.StatusOK,
-		RequiredContent: []string{"id=\"uname_hidden\"", "Incorrect username or password"},
+		RequiredContent: []string{"id=\"uname_hidden\"", "Nom d'utilisateur ou mot de passe incorrect"},
 		ExcludedContent: []string{"URL=./admin"},
 	}
 
@@ -122,7 +122,7 @@ func TestLogin(t *testing.T) {
 
 	// POST with correct credentials but invalid CSRF token shows error
 	postConfig.PostValues = postValues("test", "adminadmin", "invalid")
-	postConfig.RequiredContent = []string{"id=\"uname_hidden\"", "The login page was open too long and expired. Please try again."}
+	postConfig.RequiredContent = []string{"id=\"uname_hidden\"", "La page de connexion est restée ouverte trop longtemps et a expiré. Réessayez."}
 	test.HttpPostRequest(t, postConfig)
 
 	// GET /login with OAuth2 enabled redirects to oauth-login
@@ -171,7 +171,7 @@ func TestAdminAuth(t *testing.T) {
 	t.Parallel()
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/admin",
-		RequiredContent: []string{"Downloads remaining"},
+		RequiredContent: []string{"Téléch. restants"},
 		IsHtml:          true,
 		Cookies: []test.Cookie{{
 			Name:  "session_token",
@@ -195,7 +195,7 @@ func TestAdminRenewalAuth(t *testing.T) {
 	t.Parallel()
 	cookies := test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/admin",
-		RequiredContent: []string{"Downloads remaining"},
+		RequiredContent: []string{"Téléch. restants"},
 		IsHtml:          true,
 		Cookies: []test.Cookie{{
 			Name:  "session_token",
@@ -214,7 +214,7 @@ func TestAdminRenewalAuth(t *testing.T) {
 	}
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/admin",
-		RequiredContent: []string{"Downloads remaining"},
+		RequiredContent: []string{"Téléch. restants"},
 		IsHtml:          true,
 		Cookies: []test.Cookie{{
 			Name:  "session_token",
@@ -248,12 +248,12 @@ func TestError(t *testing.T) {
 	t.Parallel()
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/error",
-		RequiredContent: []string{"The link may have expired or the file has been downloaded too many times"},
+		RequiredContent: []string{"Le lien a peut-être expiré, ou le fichier a été téléchargé le nombre de fois autorisé"},
 		IsHtml:          true,
 	})
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/error?e2e",
-		RequiredContent: []string{"This file is encrypted, but no key was provided"},
+		RequiredContent: []string{"Ce fichier est chiffré, mais aucune clé n'a été fournie"},
 		IsHtml:          true,
 	})
 }
@@ -281,14 +281,14 @@ func TestLoginIncorrectPassword(t *testing.T) {
 	t.Parallel()
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/login",
-		RequiredContent: []string{"Incorrect username or password"},
+		RequiredContent: []string{"Nom d'utilisateur ou mot de passe incorrect"},
 		IsHtml:          true,
 		Method:          "POST",
 		PostValues:      []test.PostBody{{"username", "test"}, {"password", "incorrect"}, {"csrf-token", csrftoken.Generate(csrftoken.TypeLogin)}},
 	})
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/login",
-		RequiredContent: []string{"The login page was open too long and expired. Please try again."},
+		RequiredContent: []string{"La page de connexion est restée ouverte trop longtemps et a expiré. Réessayez."},
 		IsHtml:          true,
 		Method:          "POST",
 		PostValues:      []test.PostBody{{"username", "test"}, {"password", "incorrect"}, {"csrf-token", "incorrect"}},
@@ -298,14 +298,14 @@ func TestLoginIncorrectUsername(t *testing.T) {
 	t.Parallel()
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/login",
-		RequiredContent: []string{"Incorrect username or password"},
+		RequiredContent: []string{"Nom d'utilisateur ou mot de passe incorrect"},
 		IsHtml:          true,
 		Method:          "POST",
 		PostValues:      []test.PostBody{{"username", "incorrect"}, {"password", "incorrect"}, {"csrf-token", csrftoken.Generate(csrftoken.TypeLogin)}},
 	})
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/login",
-		RequiredContent: []string{"The login page was open too long and expired. Please try again."},
+		RequiredContent: []string{"La page de connexion est restée ouverte trop longtemps et a expiré. Réessayez."},
 		IsHtml:          true,
 		Method:          "POST",
 		PostValues:      []test.PostBody{{"username", "incorrect"}, {"password", "incorrect"}, {"csrf-token", "incorrect"}},
@@ -316,7 +316,7 @@ func TestLogout(t *testing.T) {
 	t.Parallel()
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/admin",
-		RequiredContent: []string{"Downloads remaining"},
+		RequiredContent: []string{"Téléch. restants"},
 		IsHtml:          true,
 		Cookies: []test.Cookie{{
 			Name:  "session_token",
@@ -356,11 +356,11 @@ func TestDownloadHotlink(t *testing.T) {
 	// Download expired hotlink
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://127.0.0.1:53843/hotlink/PhSs6mFtf8O5YGlLMfNw9rYXx9XRNkzCnJZpQBi7inunv3Z4A.jpg",
-		RequiredContent: []string{"The requested file has expired"},
+		RequiredContent: []string{"Le fichier demandé a expiré"},
 	})
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://127.0.0.1:53843/h/wjqlzpq2.jpg",
-		RequiredContent: []string{"The requested file has expired"},
+		RequiredContent: []string{"Le fichier demandé a expiré"},
 	})
 }
 
@@ -396,7 +396,7 @@ func TestDownloadPagePassword(t *testing.T) {
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://127.0.0.1:53843/d?id=jpLXGJKigM4hjtA6T6sN",
 		IsHtml:          true,
-		RequiredContent: []string{"Password required"},
+		RequiredContent: []string{"Mot de passe requis"},
 	})
 }
 func TestDownloadPageIncorrectPassword(t *testing.T) {
@@ -404,7 +404,7 @@ func TestDownloadPageIncorrectPassword(t *testing.T) {
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://127.0.0.1:53843/d?id=jpLXGJKigM4hjtA6T6sN",
 		IsHtml:          true,
-		RequiredContent: []string{"Incorrect password!"},
+		RequiredContent: []string{"Mot de passe incorrect !"},
 		Method:          "POST",
 		PostValues:      []test.PostBody{{"password", "incorrect"}},
 	})
@@ -415,7 +415,7 @@ func TestDownloadIncorrectPasswordCookie(t *testing.T) {
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://127.0.0.1:53843/d?id=jpLXGJKigM4hjtA6T6sN",
 		IsHtml:          true,
-		RequiredContent: []string{"Password required"},
+		RequiredContent: []string{"Mot de passe requis"},
 		Cookies:         []test.Cookie{{"pjpLXGJKigM4hjtA6T6sN", "invalid"}},
 	})
 }
@@ -566,7 +566,7 @@ func TestApiPageAuthorized(t *testing.T) {
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://127.0.0.1:53843/apiKeys",
 		IsHtml:          true,
-		RequiredContent: []string{"Click on the API key name to give it a new name."},
+		RequiredContent: []string{"Cliquez sur le nom d'une clé pour la renommer."},
 		Cookies: []test.Cookie{{
 			Name:  "session_token",
 			Value: "validsession",
@@ -579,7 +579,7 @@ func TestApiPageNotAuthorized(t *testing.T) {
 		Url:             "http://127.0.0.1:53843/apiKeys",
 		RedirectUrl:     "login",
 		ResultCode:      http.StatusTemporaryRedirect,
-		ExcludedContent: []string{"Click on the API key name to give it a new name."},
+		ExcludedContent: []string{"Cliquez sur le nom d'une clé pour la renommer."},
 		Cookies: []test.Cookie{{
 			Name:  "session_token",
 			Value: "invalid",
@@ -639,7 +639,7 @@ func TestDisableLogin(t *testing.T) {
 	authentication.Init(configuration.Get().Authentication)
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53843/admin",
-		RequiredContent: []string{"Downloads remaining"},
+		RequiredContent: []string{"Téléch. restants"},
 		IsHtml:          true,
 		Cookies: []test.Cookie{{
 			Name:  "session_token",

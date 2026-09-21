@@ -249,6 +249,8 @@ This disables all of Gokapi's internal authentication except for API calls. The 
 - ``/admin``
 - ``/apiKeys``
 - ``/auth/token``
+- ``/branding``
+- ``/brandingSave``
 - ``/changePassword``
 - ``/downloadPresigned``
 - ``/e2eSetup``

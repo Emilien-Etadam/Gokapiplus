@@ -1,0 +1,141 @@
+{{ define "branding" }}{{ template "header" . }}
+
+<div class="container-fluid py-4" style="max-width: 1100px;">
+
+  <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-4 text-start">
+    <div>
+      <h3 class="mb-1">Apparence</h3>
+      <div class="text-muted small">N'affecte que les pages vues par les destinataires : téléchargement, mot de passe et erreur. L'interface d'administration n'est pas touchée.</div>
+    </div>
+  </div>
+
+  {{ if .IsSaved }}
+  <div class="alert alert-success" role="alert">Apparence enregistrée. Ouvrez un lien de partage pour la voir.</div>
+  {{ end }}
+  {{ if .Error }}
+  <div class="alert alert-danger" role="alert">{{ .Error }}</div>
+  {{ end }}
+
+  <form method="post" action="./brandingSave" enctype="multipart/form-data" id="brandingForm">
+    <div class="row g-4">
+
+      <div class="col-lg-7 text-start">
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="card-title mb-0">Logo</h5>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" role="switch" id="showLogo" name="showLogo" value="1" {{ if .Branding.ShowLogo }}checked{{ end }}>
+                <label class="form-check-label small" for="showLogo">Afficher</label>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="logo" class="form-label small">Fichier image</label>
+              <input class="form-control" type="file" id="logo" name="logo" accept=".png,.jpg,.jpeg,.webp,.svg">
+              <div class="form-text">PNG, JPG, WEBP ou SVG, 1 Mo maximum.</div>
+            </div>
+
+            {{ if .Branding.LogoFile }}
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="badge bg-secondary">{{ .Branding.LogoFile }}</span>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" role="switch" id="removeLogo" name="removeLogo" value="1">
+                <label class="form-check-label small" for="removeLogo">Retirer à l'enregistrement</label>
+              </div>
+            </div>
+            {{ end }}
+
+            <label for="logoHeight" class="form-label small">Hauteur : <span id="logoHeightValue">{{ .Branding.LogoHeight }}</span> px</label>
+            <input type="range" class="form-range" min="20" max="120" id="logoHeight" name="logoHeight" value="{{ .Branding.LogoHeight }}">
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title mb-3">Fond</h5>
+
+            <div class="mb-3">
+              <label for="backgroundMode" class="form-label small">Type</label>
+              <select class="form-select" id="backgroundMode" name="backgroundMode">
+                <option value="default" {{ if eq .Branding.BackgroundMode "default" }}selected{{ end }}>Par défaut Gokapi</option>
+                <option value="color" {{ if eq .Branding.BackgroundMode "color" }}selected{{ end }}>Couleur unie</option>
+                <option value="image" {{ if eq .Branding.BackgroundMode "image" }}selected{{ end }}>Image</option>
+              </select>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <label for="backgroundColor" class="form-label small">Couleur de fond</label>
+                <input type="color" class="form-control form-control-color w-100" id="backgroundColor" name="backgroundColor" value="{{ .Branding.BackgroundColor }}">
+              </div>
+              <div class="col-sm-6">
+                <label for="accentColor" class="form-label small">Couleur des boutons</label>
+                <input type="color" class="form-control form-control-color w-100" id="accentColor" name="accentColor" value="{{ .Branding.AccentColor }}">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="background" class="form-label small">Image de fond</label>
+              <input class="form-control" type="file" id="background" name="background" accept=".png,.jpg,.jpeg,.webp">
+              <div class="form-text">PNG, JPG ou WEBP, 5 Mo maximum.</div>
+            </div>
+
+            {{ if .Branding.BackgroundFile }}
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="badge bg-secondary">{{ .Branding.BackgroundFile }}</span>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" role="switch" id="removeBackground" name="removeBackground" value="1">
+                <label class="form-check-label small" for="removeBackground">Retirer à l'enregistrement</label>
+              </div>
+            </div>
+            {{ end }}
+
+            <label for="veilPercent" class="form-label small">Voile sombre : <span id="veilValue">{{ .Branding.VeilPercent }}</span> %</label>
+            <input type="range" class="form-range" min="0" max="90" id="veilPercent" name="veilPercent" value="{{ .Branding.VeilPercent }}">
+            <div class="form-text">Garde le texte lisible sur une image chargée.</div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+          <a class="btn btn-outline-light" href="./d?id=preview" target="_blank" rel="noopener" id="openPreview">Ouvrir un lien de partage</a>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="text-muted small text-uppercase fw-bold mb-2 text-start">Aperçu</div>
+        <div id="brandingPreview" class="border rounded p-4 d-flex flex-column align-items-center justify-content-center"
+             data-logo-url="{{ if .Branding.LogoFile }}./branding/asset/logo{{ end }}"
+             data-background-url="{{ if .Branding.BackgroundFile }}./branding/asset/background{{ end }}"
+             style="min-height: 420px; background-color: #212529; background-size: cover; background-position: center;">
+          <div id="previewLogo" class="mb-3" style="width: 60%; height: 48px; background-position: center; background-repeat: no-repeat; background-size: contain;"></div>
+          <div class="card" style="width: 100%; max-width: 280px;">
+            <div class="card-body text-center">
+              <div class="fw-bold text-break mb-3" style="font-size: 0.85rem;">partage-2026-09-20-14-05.zip</div>
+              <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between dark-list-item small">
+                  <span>Taille</span><span class="text-white fw-bold">218 MB</span>
+                </li>
+              </ul>
+              <button class="btn btn-primary w-100" type="button" id="previewButton" disabled>Télécharger</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-text text-start">L'aperçu utilise les valeurs ci-dessus. La vraie page conserve aussi votre CSS personnalisé.</div>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+<script src="./js/min/admin.min.{{ template "js_admin_version"}}.js"></script>
+<script>
+    initBrandingSettings();
+</script>
+
+{{ template "pagename" "Branding"}}
+{{ template "customjs" .}}
+{{ template "footer" true}}
+{{ end }}

@@ -53,7 +53,7 @@ function formatUnixTimestamp(unixTimestamp) {
 
 function formatTimestampWithNegative(unixTimestamp, negative) {
     if (negative === undefined) {
-        negative = "Never";
+        negative = "Jamais";
     }
     if (unixTimestamp == 0) {
         return negative;
@@ -71,7 +71,7 @@ function insertDateWithNegative(unixTimestamp, id, negative) {
 
 function insertLastOnlineDate(unixTimestamp, id) {
     if ((Date.now() / 1000) - 120 < unixTimestamp) {
-        document.getElementById(id).innerText = "Online";
+        document.getElementById(id).innerText = "En ligne";
         return;
     }
     insertDateWithNegative(unixTimestamp, id);
@@ -79,7 +79,7 @@ function insertLastOnlineDate(unixTimestamp, id) {
 
 function formatFileRequestExpiry(unixTimestamp) {
     if (unixTimestamp == 0) {
-        return "Never";
+        return "Jamais";
     }
     if ((Date.now() / 1000) > unixTimestamp) {
         return "Expired";

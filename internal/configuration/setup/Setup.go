@@ -67,7 +67,7 @@ func RunIfFirstStart() {
 		credentialAWSTest = helper.GenerateRandomString(10)
 		fmt.Println()
 		fmt.Println("###################################################################")
-		fmt.Println("Use the following password for testing the AWS configuration:")
+		fmt.Println("Mot de passe à utiliser pour tester la configuration AWS :")
 		fmt.Println("Password:  " + credentialAWSTest)
 		fmt.Println("###################################################################")
 		fmt.Println()
@@ -82,7 +82,7 @@ func RunConfigModification() {
 	credentialPassword = helper.GenerateRandomString(10)
 	fmt.Println()
 	fmt.Println("###################################################################")
-	fmt.Println("Use the following credentials for modifying the configuration:")
+	fmt.Println("Identifiants à utiliser pour modifier la configuration :")
 	fmt.Println("Username: " + credentialUsername)
 	fmt.Println("Password: " + credentialPassword)
 	fmt.Println("###################################################################")
@@ -109,7 +109,7 @@ func basicAuth(next http.HandlerFunc) http.HandlerFunc {
 				return
 			}
 		}
-		w.Header().Set("WWW-Authenticate", `Basic realm="Please enter the credentials shown in the console output", charset="UTF-8"`)
+		w.Header().Set("WWW-Authenticate", `Basic realm="Saisissez les identifiants affichés dans la console", charset="UTF-8"`)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 	}
 }
@@ -133,15 +133,15 @@ func startSetupWebserver() {
 	}
 	if debugDisableAuth {
 		srv.Addr = "127.0.0.1:" + port
-		fmt.Println("Authentication is disabled by debug flag. Setup only accessible by localhost")
-		fmt.Println("Please open http://127.0.0.1:" + port + "/setup to setup Gokapi.")
+		fmt.Println("L'authentification est désactivée par le drapeau de débogage. L'installation n'est accessible que depuis localhost")
+		fmt.Println("Ouvrez http://127.0.0.1:" + port + "/setup pour configurer Gokapi.")
 	} else {
-		fmt.Println("Please open http://" + resolveHostIp() + ":" + port + "/setup to setup Gokapi.")
+		fmt.Println("Ouvrez http://" + resolveHostIp() + ":" + port + "/setup pour configurer Gokapi.")
 	}
 	listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		if isErrorAddressAlreadyInUse(err) {
-			fmt.Println("This port is already in use. Use parameter -p or env variable GOKAPI_PORT to change the port.")
+			fmt.Println("Ce port est déjà utilisé. Utilisez le paramètre -p ou la variable GOKAPI_PORT pour en changer.")
 		}
 		log.Fatalf("Setup Webserver: %v", err)
 	}
@@ -797,7 +797,7 @@ func handleShowSetup(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleShowMaintenance(w http.ResponseWriter, r *http.Request) {
-	_, _ = w.Write([]byte("Server is in maintenance mode, please try again in a few minutes."))
+	_, _ = w.Write([]byte("Le serveur est en maintenance, réessayez dans quelques minutes."))
 }
 
 // Handling of /setupResult
@@ -915,7 +915,7 @@ func handleTestAws(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(awsTestResponse{
 			Code:   http.StatusBadRequest,
-			Result: "Invalid or incomplete credentials provided",
+			Result: "Identifiants invalides ou incomplets",
 		})
 		return
 	}
@@ -937,7 +937,7 @@ func handleTestAws(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(awsTestResponse{
 		Code:   http.StatusOK,
-		Result: "All tests OK.",
+		Result: "Tous les tests sont passés.",
 	})
 }
 
@@ -952,9 +952,9 @@ func handleAwsError(w http.ResponseWriter, err error, operation int) {
 	var prefix string
 	switch operation {
 	case awsOperationLogin:
-		prefix = "Unable to login. "
+		prefix = "Connexion impossible. "
 	case awsOperationCors:
-		prefix = "Could not get CORS settings. "
+		prefix = "Impossible de lire les réglages CORS. "
 	}
 	var response awsTestResponse
 
@@ -963,11 +963,11 @@ func handleAwsError(w http.ResponseWriter, err error, operation int) {
 		code := awsErr.Code()
 		switch code {
 		case s3.ErrCodeNoSuchBucket:
-			response.Result = "Invalid bucket or regions provided, bucket does not exist."
+			response.Result = "Compartiment ou région invalide : le compartiment n'existe pas."
 		case "Forbidden":
-			response.Result = "Invalid credentials provided, check bucket and region."
+			response.Result = "Identifiants invalides : vérifiez le compartiment et la région."
 		case "RequestError":
-			response.Result = "Unable to connect to server, check endpoint."
+			response.Result = "Connexion au serveur impossible : vérifiez le point d'accès."
 		case "SerializationError":
 			response.Result = "Invalid response received by server, check endpoint."
 		case "NotFound":

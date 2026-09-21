@@ -14,18 +14,18 @@
         <div class="col">
 		<div class="card" style="width: 50%;">
 		  <div class="card-body">
-		    <h2 class="card-title">End-to-End Encryption Setup</h2>
+		    <h2 class="card-title">Configuration du chiffrement de bout en bout</h2>
 		    <br><br>
-		    <p class="card-text">Your password for decryption is:<br>
-			<b><kbd id="decryptionpw">Generating.......</kbd></b> <button type="button" id="downpw" class="btn btn-outline-light btn-sm" disabled><i class="bi bi-download"></i></button></p>
+		    <p class="card-text">Votre mot de passe de déchiffrement est :<br>
+			<b><kbd id="decryptionpw">Génération.......</kbd></b> <button type="button" id="downpw" class="btn btn-outline-light btn-sm" disabled><i class="bi bi-download"></i></button></p>
 			<div id="errordiv" style="display:none">
 				<span id="errormessage" style="color:red"></span>
 				<br>
 				<br>
 			</div>
-		    <b>Save this password to a secure location, without it you will not be able to decrypt/share your files if your browser data gets deleted or you login from a different machine! This password will only be shown once.</b>
-		    <br><br>If you need to reset the password, run the Gokapi setup again.
-		    <br><br><button type="button" id="genbutton" class="btn btn-light" disabled onclick="window.location='./admin';">Continue</button>
+		    <b>Conservez ce mot de passe en lieu sûr : sans lui, vous ne pourrez plus déchiffrer ni partager vos fichiers si les données de votre navigateur sont effacées ou si vous vous connectez depuis une autre machine. Il ne sera affiché qu'une seule fois.</b>
+		    <br><br>Pour réinitialiser le mot de passe, relancez la configuration de Gokapi.
+		    <br><br><button type="button" id="genbutton" class="btn btn-light" disabled onclick="window.location='./admin';">Continuer</button>
 		    </div>
 		  </div>
 		</div>
@@ -92,9 +92,9 @@ function newKey() {
         <div class="col">
 		<div class="card" style="width: 50%;">
 		  <div class="card-body">
-		    <h2 class="card-title">End-to-End Encryption Setup</h2>
+		    <h2 class="card-title">Configuration du chiffrement de bout en bout</h2>
 		    <br><br>
-		    <p class="card-text">End-to-end encryption has been set up, however no key was found on the local machine. Please enter the password in the text field below. If you do not know the decryption password, please re-run the Gokapi setup to reset the password.</p>
+		    <p class="card-text">Le chiffrement de bout en bout est configuré, mais aucune clé n'a été trouvée sur cette machine. Saisissez le mot de passe ci-dessous. Si vous ne le connaissez pas, relancez la configuration de Gokapi pour le réinitialiser.</p>
 		      <div class="mb-3"><br>
     			<input type="password" class="form-control" id="password" name="password">
 			<div id="errordiv" style="display:none">
@@ -102,7 +102,7 @@ function newKey() {
 				<span id="errormessage" style="color:red"></span>
 				<br>
 			</div>
-		    <br><br><button type="button"  id="enterpwbutton" class="btn btn-light"  onclick="saveKey()" >Save</button>
+		    <br><br><button type="button"  id="enterpwbutton" class="btn btn-light"  onclick="saveKey()" >Enregistrer</button>
   			</div>
 		  </div>
 		</div>

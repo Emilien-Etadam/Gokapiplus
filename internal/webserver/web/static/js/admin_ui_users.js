@@ -51,7 +51,7 @@ function changeUserPermission(userId, permission, buttonId) {
                 indicator.classList.add("perm-notgranted");
             }
             indicator.classList.remove("perm-processing");
-            alert("Unable to set permission: " + error);
+            alert("Impossible de modifier l'autorisation : " + error);
             console.error('Error:', error);
         });
 }
@@ -72,7 +72,7 @@ function changeRank(userId, newRank, buttonId) {
         })
         .catch(error => {
             indicator.disabled = false;
-            alert("Unable to change rank: " + error);
+            alert("Impossible de changer le rang : " + error);
             console.error('Error:', error);
         });
 }
@@ -80,12 +80,12 @@ function changeRank(userId, newRank, buttonId) {
 
 
 function showDeleteUserModal(userId, userEmail) {
-    let checkboxDelete = document.getElementById("checkboxDelete");
+    let checkboxDelete = document.getElementById("checkboxSupprimer");
     checkboxDelete.checked = false;
     document.getElementById("deleteModalBody").innerText = userEmail;
     $('#deleteModal').modal('show');
 
-    document.getElementById("buttonDelete").onclick = function() {
+    document.getElementById("buttonSupprimer").onclick = function() {
         apiUserDelete(userId, checkboxDelete.checked)
             .then(data => {
                 $('#deleteModal').modal('hide');
@@ -95,7 +95,7 @@ function showDeleteUserModal(userId, userEmail) {
                 }, 290);
             })
             .catch(error => {
-                alert("Unable to delete user: " + error);
+                alert("Impossible de supprimer l'utilisateur : " + error);
                 console.error('Error:', error);
             });
     };
@@ -154,7 +154,7 @@ function resetPw(userid, newPw) {
             }
         })
         .catch(error => {
-            alert("Unable to reset user password: " + error);
+            alert("Impossible de réinitialiser le mot de passe : " + error);
             console.error('Error:', error);
             button.disabled = false;
         });
@@ -178,10 +178,10 @@ function addNewUser() {
             })
             .catch(error => {
                 if (error.message == "duplicate") {
-                    alert("A user already exists with that name");
+                    alert("Un utilisateur porte déjà ce nom");
                     button.disabled = false;
                 } else {
-                    alert("Unable to create user: " + error);
+                    alert("Impossible de créer l'utilisateur : " + error);
                     console.error('Error:', error);
                     button.disabled = false;
                 }
@@ -220,7 +220,7 @@ const PermissionDefinitions = [
         key: "UserPermEditOtherUploads",
         bit: 1 << 2,
         icon: "bi bi-pencil",
-        title: "Edit other uploads",
+        title: "Modifier other uploads",
         htmlId: userid => `perm_edit_${userid}`,
         apiName: "PERM_EDIT"
     },
@@ -228,7 +228,7 @@ const PermissionDefinitions = [
         key: "UserPermDeleteOtherUploads",
         bit: 1 << 4,
         icon: "bi bi-trash3",
-        title: "Delete other uploads",
+        title: "Supprimer other uploads",
         htmlId: userid => `perm_delete_${userid}`,
         apiName: "PERM_DELETE"
     },
@@ -295,7 +295,7 @@ function addRowUser(userid, name, permissions) {
 
     cellName.innerText = name;
     cellGroup.innerText = "User";
-    cellLastOnline.innerText = "Never";
+    cellLastOnline.innerText = "Jamais";
     cellUploads.innerText = "0";
 
     // Create one button group
@@ -309,7 +309,7 @@ function addRowUser(userid, name, permissions) {
         btnResetPw.id = `pwchange-${userid}`;
         btnResetPw.type = "button";
         btnResetPw.className = "btn btn-outline-light btn-sm";
-        btnResetPw.title = "Reset Password";
+        btnResetPw.title = "Réinitialiser le mot de passe";
         btnResetPw.onclick = () => showResetPwModal(userid, name);
         btnResetPw.innerHTML = `<i class="bi bi-key-fill"></i>`;
         btnGroup.appendChild(btnResetPw);
@@ -320,7 +320,7 @@ function addRowUser(userid, name, permissions) {
     btnPromote.id = `changeRank_${userid}`;
     btnPromote.type = "button";
     btnPromote.className = "btn btn-outline-light btn-sm";
-    btnPromote.title = "Promote User";
+    btnPromote.title = "Promouvoir";
     if (isAdmin) {
         btnPromote.onclick = () => changeRank(userid, 'ADMIN', `changeRank_${userid}`);
     } else {
@@ -334,7 +334,7 @@ function addRowUser(userid, name, permissions) {
     btnDelete.id = `delete-${userid}`;
     btnDelete.type = "button";
     btnDelete.className = "btn btn-outline-danger btn-sm";
-    btnDelete.title = "Delete";
+    btnDelete.title = "Supprimer";
     btnDelete.onclick = () => showDeleteUserModal(userid, name);
     btnDelete.innerHTML = `<i class="bi bi-trash3"></i>`;
     btnGroup.appendChild(btnDelete);

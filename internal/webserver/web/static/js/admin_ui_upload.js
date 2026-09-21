@@ -39,18 +39,18 @@ function initDropzone() {
                 console.log(errorMessage);
                 if (xhr) {
                     if (xhr.status === 413) {
-                        showError(file, "File too large to upload. If you are using a reverse proxy, make sure that the allowed body size is at least 70MB.");
+                        showError(file, "Fichier trop volumineux. Si vous passez par un proxy inverse, vérifiez que la taille de corps autorisée est d'au moins 70 Mo.");
                         return;
                     }
                     try {
                         console.log(xhr);
                         errInfo = JSON.parse(xhr.responseText);
-                        showError(file, "Error: " + errInfo.ErrorMessage);
+                        showError(file, "Erreur : " + errInfo.ErrorMessage);
                     } catch (ignored) {
-                        showError(file, "Error: " + xhr.responseText);
+                        showError(file, "Erreur : " + xhr.responseText);
                     }
                 } else {
-                    showError(file, "Error: " + errorMessage);
+                    showError(file, "Erreur : " + errorMessage);
                 }
             });
             this.on("uploadprogress", function(file, progress, bytesSent) {
@@ -90,7 +90,7 @@ function initDropzone() {
                         let blob = new Blob([s], {
                             type: 'text/plain'
                         });
-                        let file = new File([blob], "Pasted Text.txt", {
+                        let file = new File([blob], "Texte collé.txt", {
                             type: "text/plain",
                             lastModified: new Date(0)
                         });
@@ -103,7 +103,7 @@ function initDropzone() {
 
     window.addEventListener('beforeunload', (event) => {
         if (isUploading) {
-            event.returnValue = 'Upload is still in progress. Do you want to close this page?';
+            event.returnValue = 'Un envoi est encore en cours. Voulez-vous vraiment fermer cette page ?';
         }
     });
 }
@@ -325,7 +325,7 @@ function parseProgressStatus(eventData) {
             text = "Error";
             let file = dropzoneGetFile(eventData.chunk_id);
             if (eventData.error_message == "")
-                eventData.error_message = "Server Error";
+                eventData.error_message = "Erreur du serveur";
             if (file != null) {
                 dropzoneUploadError(file, eventData.error_message);
             }
@@ -385,13 +385,13 @@ function editFile() {
                     location.reload();
                 })
                 .catch(error => {
-                    alert("Unable to edit file: " + error);
+                    alert("Impossible de modifier le fichier : " + error);
                     console.error('Error:', error);
                     button.disabled = false;
                 });
         })
         .catch(error => {
-            alert("Unable to edit file: " + error);
+            alert("Impossible de modifier le fichier : " + error);
             console.error('Error:', error);
             button.disabled = false;
         });
@@ -455,9 +455,9 @@ function showEditModal(filename, id, downloads, expiry, password, unlimitedown, 
             }
         } else {
             document.getElementById("mc_replace").disabled = true;
-            document.getElementById("mc_replace").title = "Replacing content is not available for end-to-end encrypted files";
+            document.getElementById("mc_replace").title = "Le remplacement du contenu n'est pas possible pour un fichier chiffré de bout en bout";
             selectReplace.add(new Option("Unavailable", 0));
-            selectReplace.title = "Replacing content is not available for end-to-end encrypted files";
+            selectReplace.title = "Le remplacement du contenu n'est pas possible pour un fichier chiffré de bout en bout";
             selectReplace.value = "0";
         }
     } else {
@@ -508,7 +508,7 @@ function deleteFile(id) {
             notifyWorker({ type: "fileDeleted", id: id });
         })
         .catch(error => {
-            alert("Unable to delete file: " + error);
+            alert("Impossible de supprimer le fichier : " + error);
             console.error('Error:', error);
         });
 }
@@ -635,7 +635,7 @@ function registerChangeHandler() {
 
             worker.onerror = (err) => {
                 // Worker itself failed to load – fall back to a direct connection.
-                console.warn("SharedWorker failed, falling back to direct SSE:", err);
+                console.warn("PartagerdWorker failed, falling back to direct SSE:", err);
                 sseWorkerPort = null;
                 _registerDirectSSE();
             };
@@ -644,7 +644,7 @@ function registerChangeHandler() {
             sseWorkerPort = worker.port;
             return;
         } catch (e) {
-            console.warn("SharedWorker unavailable, falling back to direct SSE:", e);
+            console.warn("PartagerdWorker unavailable, falling back to direct SSE:", e);
         }
     }
     _registerDirectSSE();
@@ -742,26 +742,30 @@ function addRow(item) {
     let row = table.insertRow(0);
     item.Id = sanitizeId(item.Id);
     row.id = "row-" + item.Id;
+    // Lus par admin_ui_stats.js pour les compteurs et la pastille d'état
+    row.dataset.expire = item.UnlimitedTime ? 0 : item.ExpireAt;
+    row.dataset.remaining = item.UnlimitedDownloads ? -1 : item.DownloadsRemaining;
     let cellFilename = row.insertCell(0);
     let cellFileSize = row.insertCell(1);
     let cellRemainingDownloads = row.insertCell(2);
     let cellStoredUntil = row.insertCell(3);
     let cellDownloadCount = row.insertCell(4);
     let cellUrl = row.insertCell(5);
-    let cellButtons = row.insertCell(6);
+    let cellStatus = row.insertCell(6);
+    let cellButtons = row.insertCell(7);
 
     cellFilename.innerText = item.Name;
     cellFilename.id = "cell-name-" + item.Id;
     cellDownloadCount.id = "cell-downloads-" + item.Id;
     cellFileSize.innerText = item.Size;
     if (item.UnlimitedDownloads) {
-        cellRemainingDownloads.innerText = "Unlimited";
+        cellRemainingDownloads.innerText = "Illimité";
     } else {
         cellRemainingDownloads.innerText = item.DownloadsRemaining;
         cellRemainingDownloads.id = "cell-downloadsRemaining-" + item.Id;
     }
     if (item.UnlimitedTime) {
-        cellStoredUntil.innerText = "Unlimited";
+        cellStoredUntil.innerText = "Illimité";
     } else {
         cellStoredUntil.innerText = formatUnixTimestamp(item.ExpireAt);
     }
@@ -779,10 +783,13 @@ function addRow(item) {
     if (item.IsPasswordProtected === true) {
         const icon = document.createElement('i');
         icon.className = 'bi bi-key';
-        icon.title = 'Password protected';
+        icon.title = 'Protégé par mot de passe';
         cellUrl.appendChild(document.createTextNode(' '));
         cellUrl.appendChild(icon);
     }
+
+    cellStatus.id = "cell-status-" + item.Id;
+    updateRowStatus(row);
 
     cellButtons.appendChild(createButtonGroup(item));
 
@@ -793,6 +800,7 @@ function addRow(item) {
     cellStoredUntil.classList.add('newItem');
     cellDownloadCount.classList.add('newItem');
     cellUrl.classList.add('newItem');
+    cellStatus.classList.add('newItem');
     cellButtons.classList.add('newItem');
     cellFileSize.setAttribute('data-order', item.SizeBytes);
 
@@ -815,7 +823,7 @@ function createButtonGroup(item) {
     copyUrlBtn.className = 'copyurl btn btn-outline-light btn-sm';
     copyUrlBtn.dataset.clipboardText = item.UrlDownload;
     copyUrlBtn.id = 'url-button-' + item.Id;
-    copyUrlBtn.title = 'Copy URL';
+    copyUrlBtn.title = 'Copier le lien';
 
     const copyIcon = document.createElement('i');
     copyIcon.className = 'bi bi-copy';
@@ -844,14 +852,14 @@ function createButtonGroup(item) {
     const aDr1 = document.createElement("a");
     if (item.UrlHotlink !== "") {
         aDr1.className = "dropdown-item copyurl";
-        aDr1.title = "Copy hotlink";
+        aDr1.title = "Copier le lien direct";
         aDr1.style.cursor = "pointer";
         aDr1.setAttribute("data-clipboard-text", item.UrlHotlink);
         aDr1.onclick = () => showToast(1000);
         aDr1.innerHTML = `<i class="bi bi-copy"></i> Hotlink`;
     } else {
         aDr1.className = "dropdown-item";
-        aDr1.innerText = "Hotlink not available";
+        aDr1.innerText = "Lien direct indisponible";
     }
     liDr1.appendChild(aDr1);
     dropdown1.appendChild(liDr1);
@@ -861,7 +869,7 @@ function createButtonGroup(item) {
     const btnShare = document.createElement("button");
     btnShare.type = "button";
     btnShare.className = "btn btn-outline-light btn-sm";
-    btnShare.title = "Share";
+    btnShare.title = "Partager";
     btnShare.onclick = () => shareUrl(event, item.Id);
     // For some reason bi-share does not always show up, using the svg fixes it 
     btnShare.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi" viewBox="0 0 16 16">
@@ -889,7 +897,7 @@ function createButtonGroup(item) {
     qrA.className = "dropdown-item";
     qrA.id = `qrcode-${item.Id}`;
     qrA.style.cursor = "pointer";
-    qrA.title = "Open QR Code";
+    qrA.title = "Afficher le QR code";
     qrA.onclick = () => showQrCode(item.UrlDownload);
     qrA.innerHTML = `<i class="bi bi-qr-code"></i> QR Code`;
     qrLi.appendChild(qrA);
@@ -898,7 +906,7 @@ function createButtonGroup(item) {
     const emailLi = document.createElement("li");
     const emailA = document.createElement("a");
     emailA.className = "dropdown-item";
-    emailA.title = "Share via email";
+    emailA.title = "Envoyer par courriel";
     emailA.id = `email-${item.Id}`;
     emailA.target = "_blank";
     emailA.href = `mailto:?body=${encodeURIComponent(item.UrlDownload)}`;
@@ -917,7 +925,7 @@ function createButtonGroup(item) {
     const btnDownload = document.createElement('button');
     btnDownload.type = 'button';
     btnDownload.className = 'btn btn-outline-light btn-sm';
-    btnDownload.title = 'Download';
+    btnDownload.title = 'Télécharger';
     if (item.RequiresClientSideDecryption) {
         btnDownload.classList.add("disabled");
     }
@@ -936,7 +944,7 @@ function createButtonGroup(item) {
     const btnEdit = document.createElement('button');
     btnEdit.type = 'button';
     btnEdit.className = 'btn btn-outline-light btn-sm';
-    btnEdit.title = 'Edit';
+    btnEdit.title = 'Modifier';
 
     const editIcon = document.createElement('i');
     editIcon.className = 'bi bi-pencil';
@@ -962,7 +970,7 @@ function createButtonGroup(item) {
     const btnDelete = document.createElement('button');
     btnDelete.type = 'button';
     btnDelete.className = 'btn btn-outline-danger btn-sm';
-    btnDelete.title = 'Delete';
+    btnDelete.title = 'Supprimer';
     btnDelete.id = 'button-delete-' + item.Id;
 
     const deleteIcon = document.createElement('i');
@@ -1003,9 +1011,9 @@ function changeRowCount(add, row) {
 
     let infoEmpty = document.getElementsByClassName("dataTables_empty")[0];
     if (typeof infoEmpty !== "undefined") {
-        infoEmpty.innerText = "Files stored: " + rowCount;
+        infoEmpty.innerText = "Fichiers stockés : " + rowCount;
     } else {
-        document.getElementsByClassName("dataTables_info")[0].innerText = "Files stored: " + rowCount;
+        document.getElementsByClassName("dataTables_info")[0].innerText = "Fichiers stockés : " + rowCount;
     }
 }
 
@@ -1063,7 +1071,7 @@ function handleUndo(button) {
             }
         })
         .catch(error => {
-            alert("Unable to restore file: " + error);
+            alert("Impossible de restaurer le fichier : " + error);
             console.error('Error:', error);
         });
 }

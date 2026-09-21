@@ -80,7 +80,7 @@ function downloadFileWithPresign(id) {
             a.remove();
         })
         .catch(error => {
-            alert("Unable to download: " + error);
+            alert("Impossible de télécharger : " + error);
             console.error('Error:', error);
         });
 }
@@ -100,7 +100,7 @@ function downloadFilesZipWithPresign(ids, filename) {
             a.remove();
         })
         .catch(error => {
-            alert("Unable to download: " + error);
+            alert("Impossible de télécharger : " + error);
             console.error('Error:', error);
         });
 }

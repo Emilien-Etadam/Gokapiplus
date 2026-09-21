@@ -17,18 +17,41 @@
             </div>
 
             {{ if .EndToEndEncryption }}
-                <h4 id="filename" class="card-title filename-text mb-2">Decrypting...</h4>
-                <div class="mb-4">
-                    <span class="badge rounded-pill bg-info text-dark">Encrypted</span>
-                </div>
+                <h4 id="filename" class="card-title filename-text mb-2">Déchiffrement...</h4>
             {{ else }}
-                <h4 id="filename" class="card-title filename-text mb-4">{{ .Name }}</h4>
+                <h4 id="filename" class="card-title filename-text mb-2">{{ .Name }}</h4>
             {{ end }}
+
+            <div class="mb-4 d-flex justify-content-center gap-2 flex-wrap">
+                {{ if .IsArchive }}
+                    <span class="badge bg-secondary">Archive ZIP</span>
+                {{ end }}
+                {{ if .EndToEndEncryption }}
+                    <span class="badge bg-success"><i class="bi bi-lock-fill"></i> Chiffré</span>
+                {{ end }}
+            </div>
 
             <ul class="list-group mb-4">
                 <li class="list-group-item d-flex justify-content-between align-items-center dark-list-item">
-                    <span>Size</span>
+                    <span>Taille</span>
                     <span class="text-white fw-bold">{{ .Size }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center dark-list-item">
+                    <span>Téléch. restants</span>
+                    {{ if .UnlimitedDownloads }}
+                        <span class="text-white fw-bold">Sans limite</span>
+                    {{ else }}
+                        <span class="text-white fw-bold">{{ .DownloadsRemaining }}</span>
+                    {{ end }}
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center dark-list-item">
+                    <span>Disponible jusqu'au</span>
+                    {{ if .UnlimitedTime }}
+                        <span class="text-white fw-bold">Sans limite</span>
+                    {{ else }}
+                        <span class="text-white fw-bold" id="expiryDate"></span>
+                        <script>insertFormattedDate({{ .ExpireAt }}, "expiryDate");</script>
+                    {{ end }}
                 </li>
             </ul>
 
@@ -36,14 +59,21 @@
                 {{ if .ClientSideDecryption }}
                     <button id="downloadbutton" class="btn btn-primary btn-lg" type="button" disabled onclick="Download(this);">
                         <span id="wasmspinner" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Loading...
+                        Chargement...
                     </button>
                 {{ else }}
                     <button class="btn btn-primary btn-lg" type="button" onclick="Download(this);">
-                        Download
+                        Télécharger
                     </button>
                 {{ end }}
             </div>
+
+            {{ if or (not .UnlimitedDownloads) .ClientSideDecryption }}
+            <p class="text-muted small mt-3 mb-0">
+                {{ if not .UnlimitedDownloads }}Le lien cesse de fonctionner une fois les téléchargements autorisés épuisés.{{ end }}
+                {{ if .ClientSideDecryption }}Le fichier est déchiffré dans votre navigateur.{{ end }}
+            </p>
+            {{ end }}
 
             <div id="errordiv" class="mt-3" style="display:none">
                 <div class="alert alert-danger bg-danger text-white border-0" role="alert">
@@ -148,7 +178,7 @@
         function displayError(err) {
             document.getElementById("buttondiv").style.display = "none";
             document.getElementById("errordiv").style.display = "block";
-            document.getElementById("errormessage").innerHTML = "<b>Error: </b> " + err.toString().replace(/^Error:/gi, "");
+            document.getElementById("errormessage").innerHTML = "<b>Erreur : </b> " + err.toString().replace(/^Error:/gi, "");
             console.error('Caught exception', err)
         }
 

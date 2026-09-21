@@ -42,7 +42,7 @@ function changeApiPermission(userId, permission, buttonId) {
                 indicator.classList.add("perm-notgranted");
             }
             indicator.classList.remove("perm-processing");
-            alert("Unable to set permission: " + error);
+            alert("Impossible de modifier l'autorisation : " + error);
             console.error('Error:', error);
         });
 }
@@ -59,7 +59,7 @@ function deleteApiKey(apiKey) {
             }, 290);
         })
         .catch(error => {
-            alert("Unable to delete API key: " + error);
+            alert("Impossible de supprimer la clé d'API : " + error);
             console.error('Error:', error);
         });
 }
@@ -74,7 +74,7 @@ function newApiKey() {
             document.getElementById("button-newapi").disabled = false;
         })
         .catch(error => {
-            alert("Unable to create API key: " + error);
+            alert("Impossible de créer la clé d'API : " + error);
             console.error('Error:', error);
         });
 }
@@ -99,7 +99,7 @@ function addFriendlyNameChange(apiKey) {
         allowEdit = false;
         let newName = input.value;
         if (newName == "") {
-            newName = "Unnamed key";
+            newName = "Clé sans nom";
         }
         cell.innerText = newName;
 
@@ -107,7 +107,7 @@ function addFriendlyNameChange(apiKey) {
 
         apiAuthFriendlyName(apiKey, newName)
             .catch(error => {
-                alert("Unable to save name: " + error);
+                alert("Impossible d'enregistrer le nom : " + error);
                 console.error('Error:', error);
             });
     };
@@ -158,14 +158,14 @@ function addRowApi(apiKey, publicId) {
     cellButtons.classList.add("newApiKey");
 
 
-    cellFriendlyName.innerText = "Unnamed key";
+    cellFriendlyName.innerText = "Clé sans nom";
     cellFriendlyName.id = "friendlyname-" + publicId;
     cellFriendlyName.onclick = function() {
         addFriendlyNameChange(publicId);
     };
     cellId.innerText = apiKey;
     cellId.classList.add("font-monospace");
-    cellLastUsed.innerText = "Never";
+    cellLastUsed.innerText = "Jamais";
 
 
     const btnGroup = document.createElement("div");
@@ -177,7 +177,7 @@ function addRowApi(apiKey, publicId) {
     const copyButton = document.createElement('button');
     copyButton.type = 'button';
     copyButton.dataset.clipboardText = apiKey;
-    copyButton.title = 'Copy API Key';
+    copyButton.title = 'Copier la clé d\'API';
     copyButton.className = 'copyurl btn btn-outline-light btn-sm';
     copyButton.setAttribute('onclick', 'showToast(1000)');
 
@@ -188,7 +188,7 @@ function addRowApi(apiKey, publicId) {
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
     deleteButton.id = `delete-${publicId}`;
-    deleteButton.title = 'Delete';
+    deleteButton.title = 'Supprimer';
     deleteButton.className = 'btn btn-outline-danger btn-sm';
     deleteButton.setAttribute('onclick', `deleteApiKey('${publicId}')`);
 
@@ -217,13 +217,13 @@ function addRowApi(apiKey, publicId) {
             perm: 'PERM_EDIT',
             icon: 'bi-pencil',
             granted: true,
-            title: 'Edit Uploads'
+            title: 'Modifier Uploads'
         },
         {
             perm: 'PERM_DELETE',
             icon: 'bi-trash3',
             granted: true,
-            title: 'Delete Uploads'
+            title: 'Supprimer Uploads'
         },
         {
             perm: 'PERM_REPLACE',
@@ -235,7 +235,7 @@ function addRowApi(apiKey, publicId) {
             perm: 'PERM_DOWNLOAD',
             icon: 'bi-box-arrow-in-down',
             granted: false,
-            title: 'Download Files'
+            title: 'Télécharger Files'
         },
         {
             perm: 'PERM_MANAGE_FILE_REQUESTS',

@@ -4,7 +4,7 @@ function displayError(err) {
 
     errorMessageEl.innerText = "";
     const bold = document.createElement("b");
-    bold.innerText = "Error: ";
+    bold.innerText = "Erreur : ";
     const message = document.createTextNode(err.toString().replace(/^Error:/gi, ""));
 
     errorMessageEl.appendChild(bold);
@@ -26,8 +26,8 @@ function checkIfE2EKeyIsSet() {
             }
             getE2EInfo();
             dropzoneObject.enable();
-            document.getElementById("uploadBoxTitle").innerText = "Drag & drop files here";
-            document.getElementById("uploadBoxSubtitle").innerText = "or paste or click to upload with end-to-end encryption";
+            document.getElementById("uploadBoxTitle").innerText = "Glissez-déposez vos fichiers ici";
+            document.getElementById("uploadBoxSubtitle").innerText = "ou collez, ou cliquez pour envoyer avec le chiffrement de bout en bout";
         });
     }
 }
@@ -68,7 +68,7 @@ function storeE2EInfo(data) {
 
 
 function invalidCipherRedirectConfim() {
-    if (confirm('It appears that an invalid end-to-end encryption key has been entered. Would you like to enter the correct one?')) {
+    if (confirm('La clé de chiffrement de bout en bout saisie semble invalide. Voulez-vous saisir la bonne?')) {
         window.location = './e2eSetup';
     }
 }
