@@ -363,7 +363,7 @@ func TestIntegration(t *testing.T) {
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53842/admin",
 		IsHtml:          false,
-		RequiredContent: []string{"Server is in maintenance mode"},
+		RequiredContent: []string{"Le serveur est en maintenance"},
 		ExcludedContent: []string{"Downloads"},
 		Method:          "GET",
 		ResultCode:      200,
@@ -371,7 +371,7 @@ func TestIntegration(t *testing.T) {
 	test.HttpPageResult(t, test.HttpTestConfig{
 		Url:             "http://localhost:53842/setup/start",
 		IsHtml:          false,
-		RequiredContent: []string{"Thank you for choosing Gokapi"},
+		RequiredContent: []string{"Merci d'avoir choisi Gokapi"},
 		Method:          "GET",
 		ResultCode:      200,
 	})
@@ -443,7 +443,7 @@ func TestIntegration(t *testing.T) {
 	})
 	test.HttpPageResultJson(t, test.HttpTestConfig{
 		Url:             "http://localhost:53842/setup/start",
-		RequiredContent: []string{"You can now change the Gokapi configuration."},
+		RequiredContent: []string{"Vous pouvez maintenant modifier la configuration de Gokapi."},
 		ExcludedContent: []string{"Unauthorized"},
 		IsHtml:          false,
 		Method:          "POST",

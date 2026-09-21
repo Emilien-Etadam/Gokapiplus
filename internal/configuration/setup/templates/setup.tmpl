@@ -1,7 +1,7 @@
 {{define "setup"}}<!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Gokapi Setup</title>
+		<title>Installation de Gokapi</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="./bootstrap/bootstrap.css" rel="stylesheet">
@@ -71,34 +71,34 @@
 
 		
 
-		<div class="wizard" id="satellite-wizard" data-title="Gokapi Setup">
+		<div class="wizard" id="satellite-wizard" data-title="Installation de Gokapi">
 
 
 
 			<!-- Step 0 Welcome -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="Welcome">
-				<h3>Welcome</h3>
+				<h3>Bienvenue</h3>
 
 				<div class="wizard-input-section">
 				
 {{ if .IsInitialSetup }}
 					<p>
-						Thank you for choosing Gokapi! This setup will guide you through the Gokapi installation. For further information please refer to the <a href="https://gokapi.readthedocs.io/en/stable/" title="Gokapi Documentation" target="_blank">documentation</a>.
+						Merci d'avoir choisi Gokapi. Cet assistant vous guide à travers l'installation. Pour en savoir plus, consultez la <a href="https://gokapi.readthedocs.io/en/stable/" title="Documentation de Gokapi" target="_blank">documentation</a>.
 					</p>
 {{ else }}
 					<p>
-						You can now change the Gokapi configuration. For further information please refer to the <a href="https://gokapi.readthedocs.io/en/stable/" title="Gokapi Documentation" target="_blank" rel="noopener noreferrer">documentation</a>.
+						Vous pouvez maintenant modifier la configuration de Gokapi. Pour en savoir plus, consultez la <a href="https://gokapi.readthedocs.io/en/stable/" title="Documentation de Gokapi" target="_blank" rel="noopener noreferrer">documentation</a>.
 					</p>
 {{ end }}
 					<br>
 {{ if .IsDataNotMounted }}
 					<p>
-					<span style="color:#FF0000;"><b>Warning:</b> It appears that your <code>/app/data</code> directory has not been mounted as a volume. This will result in complete data loss once you update or rebuild this container!</span>
+					<span style="color:#FF0000;"><b>Attention :</b> Il semble que votre dossier <code>/app/data</code> n'a pas été monté comme volume. Vous perdrez toutes vos données à la prochaine mise à jour ou reconstruction de ce conteneur.</span>
 					</p>
 {{ end }}
 {{ if .IsConfigNotMounted }}
 					<p>
-					<span style="color:#FF0000;"><b>Warning:</b> It appears that your <code>/app/config</code> directory has not been mounted as a volume. This will result in complete data loss once you update or rebuild this container!</span>
+					<span style="color:#FF0000;"><b>Attention :</b> Il semble que votre dossier <code>/app/config</code> n'a pas été monté comme volume. Vous perdrez toutes vos données à la prochaine mise à jour ou reconstruction de ce conteneur.</span>
 					</p>
 {{ end }}
 
@@ -106,40 +106,40 @@
 			</div>
 			<!-- Step 1 DB Location -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="dblocation">
-				<h3 style="display:none">Database</h3>
+				<h3 style="display:none">Base de données</h3>
 
 				<div class="wizard-input-section">
 					<div class="form-group">
 					
 {{ if not .IsInitialSetup }}
 				<p>
-					<span style="color:red"><b>Warning:</b> When changing database parameters, ensure you first migrate the database to the new location using <code>gokapi migrate-database</code> before finalising the setup.</span>
+					<span style="color:red"><b>Attention :</b> Si vous changez les paramètres de base de données, migrez-la d'abord vers son nouvel emplacement avec <code>gokapi migrate-database</code> avant de terminer l'installation.</span>
 				</p><br>
 {{ end }}
 
-							  <label for="dbtype_sel">Type of database</label>
+							  <label for="dbtype_sel">Type de base de données</label>
 						<select name="dbtype_sel" id="dbtype_sel"  style="width:350px;" class="select form-control"  onChange="dbChanged()">	
 								<option value="0" selected>SQLite</option>
 								<option value="1">Redis</option>
 
 						</select><br>
 						<div id="divsqlite">
-							<label for="sqlite_location">Database location:</label>
-							<input type="text" class="form-control" id="sqlite_location" name="sqlite_location" value="./data/gokapi.sqlite" placeholder="Database location" required><br>
+							<label for="sqlite_location">Emplacement de la base :</label>
+							<input type="text" class="form-control" id="sqlite_location" name="sqlite_location" value="./data/gokapi.sqlite" placeholder="Emplacement de la base" required><br>
 						</div>
 						<div id="divredis" style="display: none;">
-							<label for="redis_location">Database host:</label>
-							<input type="text" class="form-control" id="redis_location" name="redis_location" value="127.0.0.1:6379" placeholder="Database host" required><br>
-							<label for="redis_prefix">Key prefix:</label>
+							<label for="redis_location">Hôte de la base :</label>
+							<input type="text" class="form-control" id="redis_location" name="redis_location" value="127.0.0.1:6379" placeholder="Hôte de la base" required><br>
+							<label for="redis_prefix">Préfixe des clés :</label>
 							<input type="text" class="form-control" id="redis_prefix" name="redis_prefix" value="gokapi_" placeholder="(optional)"><br>				
-							<label for="redis_user">Username:</label>
+							<label for="redis_user">Nom d'utilisateur :</label>
 							<input type="text" class="form-control" id="redis_user" name="redis_user" value="" placeholder="(optional)"><br>				
-							<label for="redis_password">Password (stored in plain text):</label>
+							<label for="redis_password">Mot de passe (stocké en clair) :</label>
 							<input type="text" class="form-control" id="redis_password" name="redis_password" value="" placeholder="(optional)"><br>				
-							<label for="redis_ssl_sel">Use SSL</label>
+							<label for="redis_ssl_sel">Utiliser SSL</label>
 							<select name="redis_ssl_sel" id="redis_ssl_sel" style="width:350px;" class="select form-control">
 								<option value="0" selected>No</option>
-								<option value="1">Yes</option>
+								<option value="1">Oui</option>
 							</select>
 						</div>
 					</div>
@@ -149,39 +149,39 @@
 			
 			<!-- Step 2 Webserver -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="webserver1">
-				<h3 style="display:none">Webserver 1/2</h3>
+				<h3 style="display:none">Serveur web 1/2</h3>
 
 				<div class="wizard-input-section">
 					<div class="form-group">
 
-							  <label for="localhost_sel">Make webserver only accessable on this machine (bind to localhost)</label>
+							  <label for="localhost_sel">Rendre le serveur accessible uniquement depuis cette machine (écoute sur localhost)</label>
 						<select name="localhost_sel" id="localhost_sel"  style="width:350px;" class="select form-control" {{ if .IsDocker }}disabled{{ end }}>	
 {{ if .IsDocker }}
-								<option value="0" selected>Not supported in Docker</option>
+								<option value="0" selected>Non pris en charge dans Docker</option>
 {{ else }}
 								<option value="0" selected>No</option>
-								<option value="1">Yes</option>
+								<option value="1">Oui</option>
 {{ end }}
 
 						</select><br>
 							
-							  <label for="ssl_sel">Use SSL (a self-signed certificate will be generated that can be replaced)</label>
+							  <label for="ssl_sel">Utiliser SSL (un certificat auto-signé sera généré, remplaçable ensuite)</label>
 						<select name="ssl_sel" id="ssl_sel" style="width:350px;" onChange="urlParamChanged()" class="select form-control">
 								<option value="0" selected>No</option>
-								<option value="1">Yes</option>
+								<option value="1">Oui</option>
 
 						</select><br>
 						
-							  <label for="logip_sel">Log IP address on download <i>(might not be GDPR compliant)</i></label>
+							  <label for="logip_sel">Journaliser l'adresse IP au téléchargement <i>(peut ne pas être conforme au RGPD)</i></label>
 						<select name="logip_sel" id="logip_sel" style="width:350px;" class="select form-control">
 								<option value="0" selected>No</option>
-								<option value="1">Yes</option>
+								<option value="1">Oui</option>
 						</select><br>
 						
-							  <label for="showfilename_sel">Include filename in download URL</label>
+							  <label for="showfilename_sel">Inclure le nom du fichier dans l'adresse de téléchargement</label>
 						<select name="showfilename_sel" id="showfilename_sel" style="width:350px;" class="select form-control">
 								<option value="0" selected>No</option>
-								<option value="1">Yes</option>
+								<option value="1">Oui</option>
 						</select>
 					</div>
 				</div>
@@ -189,29 +189,29 @@
 			
 			<!-- Step 3 Webserver 2 -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="webserver2">
-				<h3 style="display:none">Webserver 2/2</h3>
+				<h3 style="display:none">Serveur web 2/2</h3>
 
 				<div class="wizard-input-section">
 					<div class="form-group">
 
-							  <label for="public_name">Public Name:</label>
-								<input type="text" class="form-control" id="public_name" name="public_name" value="Gokapi" placeholder="Public Name" required>
-							  <br><label for="port">Port:</label>
+							  <label for="public_name">Nom public :</label>
+								<input type="text" class="form-control" id="public_name" name="public_name" value="Gokapi" placeholder="Nom public" required>
+							  <br><label for="port">Port :</label>
 {{ if .IsDocker }}
-							<input type="number" class="form-control" id="port" value="53842" placeholder="Port number" disabled>
+							<input type="number" class="form-control" id="port" value="53842" placeholder="Numéro de port" disabled>
 							<input type="hidden" class="form-control" name="port" value="53842">
 {{ else }}
-							<input type="number" class="form-control" id="port" name="port" value="53842" min="1" max="65535" placeholder="Port number" data-min="1" data-validate="validateMinLength" required onChange="urlParamChanged()">
+							<input type="number" class="form-control" id="port" name="port" value="53842" min="1" max="65535" placeholder="Numéro de port" data-min="1" data-validate="validateMinLength" required onChange="urlParamChanged()">
 {{ end }}
 							
 
-							  <br><label for="url">Public facing URL:</label>
-								<input type="text" class="form-control" id="url" name="url" value="http://127.0.0.1:53842/" placeholder="Public URL" data-min="8" required data-validate="validateUrl">
+							  <br><label for="url">Adresse publique :</label>
+								<input type="text" class="form-control" id="url" name="url" value="http://127.0.0.1:53842/" placeholder="Adresse publique" data-min="8" required data-validate="validateUrl">
 							
 							
 
-							  <br><label for="url_redirection">Redirection URL for the index:</label>
-								<input type="text" class="form-control" id="url_redirection" name="url_redirection" value="https://github.com/Forceu/Gokapi/" placeholder="Redirection URL" required data-min="1" data-validate="validateMinLength">
+							  <br><label for="url_redirection">Adresse de redirection de la page d'accueil :</label>
+								<input type="text" class="form-control" id="url_redirection" name="url_redirection" value="https://github.com/Forceu/Gokapi/" placeholder="Adresse de redirection" required data-min="1" data-validate="validateMinLength">
 						</div>
 				</div>
 			</div>
@@ -221,24 +221,24 @@
 
 			<!-- Step 4 Auth -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="authentication">
-				<h3 style="display:none">Authentication</h3>
+				<h3 style="display:none">Authentification</h3>
 
 				<div class="wizard-input-section">
 					<div class="form-group">
 					<p>
-						Please select the method for logging in to the admin panel
+						Choisissez la méthode de connexion à l'interface d'administration
 					</p>
 
 
 						<select name="authentication_sel" id="authentication_sel" style="width:350px;" class="select form-control" onchange="authSelectionChanged(this.value);">
 							<optgroup label="Standalone">
-								<option value="0" selected>Username / Password</option>
+								<option value="0" selected>Nom d'utilisateur et mot de passe</option>
 								<option value="1" >OAuth2 OpenID Connect</option>
 							</optgroup>
 
-							<optgroup label="Reverse Proxy">
-								<option value="2">Trusted Header Authentication</option>
-								<option value="3">Disabled / Access Restriction</option>
+							<optgroup label="Proxy inverse">
+								<option value="2">Authentification par en-tête de confiance</option>
+								<option value="3">Désactivée / restriction d'accès</option>
 							</optgroup>
 
 						</select>
@@ -248,23 +248,23 @@
 
 			<!-- Step 5a Credentials PW -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="credentials">
-				<h3 style="display:none">Credentials</h3>
+				<h3 style="display:none">Identifiants</h3>
 
 
 				<div class="wizard-input-section">
 						<div class="form-group">
 					<p>
-						Please enter a username and password for the admin user
+						Saisissez un nom d'utilisateur et un mot de passe pour le compte administrateur
 					</p>
 
 							<div class="col-sm-8">
-								<input type="text" class="form-control" id="auth_username" name="auth_username" placeholder="Username" data-min="3" required data-validate="validateMinLength">
+								<input type="text" class="form-control" id="auth_username" name="auth_username" placeholder="Nom d'utilisateur" data-min="3" required data-validate="validateMinLength">
 							</div><br><br>
 							<div class="col-sm-8">
-								<input type="password" autocomplete="new-password" class="form-control" id="auth_pw" name="auth_pw" placeholder="Password" data-min={{ .MinPasswordLength }} required data-validate="validatePassword">
+								<input type="password" autocomplete="new-password" class="form-control" id="auth_pw" name="auth_pw" placeholder="Mot de passe" data-min={{ .MinPasswordLength }} required data-validate="validatePassword">
 							</div><br><br>
 							<div class="col-sm-8">
-								<input type="password" autocomplete="new-password" class="form-control" id="auth_pw2" name="auth_pw2" placeholder="Password (repeat)" data-min={{ .MinPasswordLength }} required>
+								<input type="password" autocomplete="new-password" class="form-control" id="auth_pw2" name="auth_pw2" placeholder="Mot de passe (répéter)" data-min={{ .MinPasswordLength }} required>
 						</div>
 					</div>
 
@@ -274,65 +274,65 @@
 			
 			<!-- Step 5b Credentials Oauth -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="credentials-oauth">
-				<h3 style="display:none">Credentials</h3>
+				<h3 style="display:none">Identifiants</h3>
 
 
 					<div class="wizard-input-section">
 						<div class="form-group">
 					<p>
-						Please enter the OIDC client configuration. Groups can be separated with a semicolon. The <a href="https://gokapi.readthedocs.io/en/stable/setup.html#oauth2-openid-connect" target="_blank" rel="noopener noreferrer">documentation</a> has examples on how to configure for different providers.<br>
+						Saisissez la configuration du client OIDC. Les groupes se séparent par un point-virgule. La <a href="https://gokapi.readthedocs.io/en/stable/setup.html#oauth2-openid-connect" target="_blank" rel="noopener noreferrer">documentation</a> donne des exemples de configuration pour différents fournisseurs.<br>
 					</p>
 
 							<div class="col-sm-8" style="width:90%">
-							  <label for="oauth_provider">Provider URL:</label>
-								<input type="text" class="form-control" id="oauth_provider" name="oauth_provider" placeholder="Provider URL" data-min="1" required data-validate="validateMinLength">
+							  <label for="oauth_provider">Adresse du fournisseur :</label>
+								<input type="text" class="form-control" id="oauth_provider" name="oauth_provider" placeholder="Adresse du fournisseur" data-min="1" required data-validate="validateMinLength">
 							</div>
 
 							<div class="col-sm-8" style="width:90%">
-							  <label for="oauth_id">Client ID:</label>
-								<input type="text" class="form-control" id="oauth_id" name="oauth_id" placeholder="Client ID" data-min="1" required data-validate="validateMinLength">
+							  <label for="oauth_id">Identifiant client :</label>
+								<input type="text" class="form-control" id="oauth_id" name="oauth_id" placeholder="Identifiant client" data-min="1" required data-validate="validateMinLength">
 							</div>
 
 							<div class="col-sm-8" style="width:90%">
-							  <label for="oauth_secret">Client Secret:</label>
-								<input type="text" class="form-control" id="oauth_secret" name="oauth_secret" placeholder="Client Secret" data-min="1" required data-validate="validateMinLength">
+							  <label for="oauth_secret">Secret client :</label>
+								<input type="text" class="form-control" id="oauth_secret" name="oauth_secret" placeholder="Secret client" data-min="1" required data-validate="validateMinLength">
 							</div>
 							<div class="col-sm-8" style="width:90%">
-							  <label for="oauth_admin_user">Admin email address:</label>
-								<input type="text" class="form-control" id="oauth_admin_user" name="oauth_admin_user" placeholder="Admin email address" data-min="3" required data-validate="validateMinLength">
+							  <label for="oauth_admin_user">Adresse courriel de l'administrateur :</label>
+								<input type="text" class="form-control" id="oauth_admin_user" name="oauth_admin_user" placeholder="Adresse courriel de l'administrateur" data-min="3" required data-validate="validateMinLength">
 							</div>
 							<div class="col-sm-8" style="width:90%">
-							Recheck identity every 
+							Revérifier l'identité tous les 
 							<select name="oauth_recheck_interval" id="oauth_recheck_interval" style="width:350px;" class="select form-control">
-								<option value="6"> 6 hours</option>
-								<option value="12" selected>12 hours</option>
-								<option value="24">24 hours</option>
-								<option value="72"> 3 days</option>
-								<option value="168">7 days</option>
-								<option value="336">14 days</option>
-								<option value="720">30 days</option>
+								<option value="6"> 6 heures</option>
+								<option value="12" selected>12 heures</option>
+								<option value="24">24 heures</option>
+								<option value="72"> 3 jours</option>
+								<option value="168">7 jours</option>
+								<option value="336">14 jours</option>
+								<option value="720">30 jours</option>
 						</select>
 							</div>
 							<div class="col-sm-8" style="width:90%">
-							<br>Restrict to:
+							<br>Restreindre à :
 								  <div class="oauthscopecontainer">
 								    <div class="oauthscopes">
 								      <input type="hidden" name="oauth_restrict_groups.unchecked" value="false">
 								      <input type="checkbox" id="oauth_restrict_groups" name="oauth_restrict_groups" onchange="handleOauthCheckboxChange(this)"  value="true">
-								      <label id="label_ogroups" for="oauth_restrict_groups" class="checkboxLabel">Groups</label>
-								      <input type="text" id="oauth_scope_groups" name="oauth_scope_groups" class="input-field" placeholder="Scope identifier" data-min="1" data-validate="validateMinLength" disabled>&nbsp;
-								      <input type="text" id="oauth_allowed_groups" name="oauth_allowed_groups" class="input-field" placeholder="Authorised groups" data-min="1" data-validate="validateMinLength" disabled>
+								      <label id="label_ogroups" for="oauth_restrict_groups" class="checkboxLabel">Groupes</label>
+								      <input type="text" id="oauth_scope_groups" name="oauth_scope_groups" class="input-field" placeholder="Identifiant de portée" data-min="1" data-validate="validateMinLength" disabled>&nbsp;
+								      <input type="text" id="oauth_allowed_groups" name="oauth_allowed_groups" class="input-field" placeholder="Groupes autorisés" data-min="1" data-validate="validateMinLength" disabled>
 								    </div>
 								    
 								     <div><br>
 								     <input type="hidden" name="oauth_only_registered_users.unchecked" value="false">
 								     <input  id="oauth_only_registered_users" name="oauth_only_registered_users" type="checkbox" value="true">
-								     <span>&nbsp;Only allow already existing users to log in</span>
+								     <span>&nbsp;N'autoriser que les utilisateurs déjà existants à se connecter</span>
 								     </div>
 								  </div>
 							</div> 
 							<div class="col-sm-8" style="width:90%">
-							 <label for="oauth_redir"><br>Redirection URL:</label>
+							 <label for="oauth_redir"><br>Adresse de redirection :</label>
 {{ if .IsInitialSetup }}
 								<input type="text" style="cursor:default" class="form-control" id="oauth_redir" name="oauth_redir" disabled value="http://127.0.0.1:53842/oauth-callback">
 {{ else }}
@@ -347,40 +347,40 @@
 			
 			<!-- Step 5c Credentials Header -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="credentials-header">
-				<h3 style="display:none">Credentials</h3>
+				<h3 style="display:none">Identifiants</h3>
 
 
 				<div class="wizard-input-section">
 						<div class="form-group">
 					<p>
-						Enter the key of the header that will be provided from your reverse proxy containing the username.<br><br>
+						Saisissez le nom de l'en-tête fourni par votre proxy inverse et contenant le nom d'utilisateur.<br><br>
 					</p>
 
 							<p>
-							  <label for="auth_headerkey">Header Key:</label>
-								<input type="text" class="form-control" id="auth_headerkey" name="auth_headerkey" data-min="1" required placeholder="Header Key" data-validate="validateMinLength">
+							  <label for="auth_headerkey">Nom de l'en-tête :</label>
+								<input type="text" class="form-control" id="auth_headerkey" name="auth_headerkey" data-min="1" required placeholder="Nom de l'en-tête" data-validate="validateMinLength">
 							</p>
 							
 							<p>
-							  <label for="auth_header_admin">Admin user name:</label>
-								<input type="text" class="form-control" id="auth_header_admin" name="auth_header_admin" data-min="3"  data-validate="validateMinLength" required placeholder="Admin user name">
+							  <label for="auth_header_admin">Nom du compte administrateur :</label>
+								<input type="text" class="form-control" id="auth_header_admin" name="auth_header_admin" data-min="3"  data-validate="validateMinLength" required placeholder="Nom du compte administrateur">
 							</p>
 						
 						    <br>
 						     <input type="hidden" name="auth_header_only_registered_users.unchecked" value="false">
 						     <input id="auth_header_only_registered_users" name="auth_header_only_registered_users" type="checkbox" value="true">
-						     <span>&nbsp;Only allow already existing users to log in</span>
+						     <span>&nbsp;N'autoriser que les utilisateurs déjà existants à se connecter</span>
 					</div>
 				</div>
 			</div>
 			<!-- Step 5d Credentials Disbabled -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="credentials-disabled">
-				<h3 style="display:none">Credentials</h3>
+				<h3 style="display:none">Identifiants</h3>
 
 
 				<div class="wizard-input-section">
 					<p>
-						<span style="color:#FF0000;">Warning:</span> This setting will disable authentication completely! You will need to secure the following URLs with your reverse proxy:
+						<span style="color:#FF0000;">Attention :</span> Ce réglage désactive complètement l'authentification. Vous devrez protéger les adresses suivantes avec votre proxy inverse :
 						
 						<ul>
 {{ range .ProtectedUrls }}
@@ -388,7 +388,7 @@
 {{ end }}
 						</ul>
 
-						Only proceed if you know what you are doing!
+						Ne continuez que si vous savez ce que vous faites.
 					</p>
 
 				</div>
@@ -398,21 +398,21 @@
 
 			<!-- Step 6 Storage -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="storage">
-				<h3 style="display:none">Storage</h3>
+				<h3 style="display:none">Stockage</h3>
 
 				<div class="wizard-input-section">
 					<p>
-						Choose whether to store files locally or on an S3-compatible cloud infrastructure.
+						Choisissez de stocker les fichiers localement ou sur une infrastructure compatible S3.
 					</p>
 
 					<select name="storage_sel" id="storage_sel" style="width:350px;" class="select form-control" onchange="storageSelectionChanged(this.selectedIndex);">
-							<option value="local" selected>Local Storage</option>
-							<option value="cloud" {{ if not .HasAwsFeature }} disabled {{ end }} >Cloud Storage</option>
+							<option value="local" selected>Stockage local</option>
+							<option value="cloud" {{ if not .HasAwsFeature }} disabled {{ end }} >Stockage distant</option>
 
 					</select>
 					
 {{ if not .HasAwsFeature }}
-					<p><br><br><i>This build has been compiled without AWS support, therefore cloud storage is not available.</i></p>
+					<p><br><br><i>Cette version a été compilée sans la prise en charge d'AWS : le stockage distant n'est pas disponible.</i></p>
 					
 			  				<input type="hidden" id="storage_sel_image" name="storage_sel_image" value="nochange">
 
@@ -422,19 +422,19 @@
 					<div id="cloudstorage_options" style="visibility: hidden">
 
 						<br><p>
-							Location for picture files: Select local storage if you require full encryption but still need hotlink support.
+							Emplacement des images : choisissez le stockage local si vous voulez le chiffrement complet tout en gardant les liens directs.
 						</p>
 						<select name="storage_sel_image" id="storage_sel_image" style="width:350px;" class="select form-control">
-								<option value="nochange" selected>Use cloud storage</option>
-								<option value="local">Use local storage for pictures</option>
+								<option value="nochange" selected>Utiliser le stockage distant</option>
+								<option value="local">Utiliser le stockage local pour les images</option>
 
 						</select>
 						<br><p>
-							To conserve bandwidth, Gokapi defaults to redirecting to pre-signed S3 download URLs. If you prefer not to use this feature or if your S3 server is only accessible from your internal network, select the "Proxy downloads" option below.
+							To conserve bandwidth, Gokapi defaults to redirecting to pre-signed S3 download URLs. If you prefer not to use this feature or if your S3 server is only accessible from your internal network, select the "Faire transiter les téléchargements" option below.
 						</p>
 						<select name="storage_sel_proxy" id="storage_sel_proxy" style="width:350px;" class="select form-control">
-								<option value="presigned" selected>Default</option>
-								<option value="proxy">Proxy downloads</option>
+								<option value="presigned" selected>Par défaut</option>
+								<option value="proxy">Faire transiter les téléchargements</option>
 
 						</select>
 					</div>
@@ -447,41 +447,41 @@
 			
 			<!-- Step 7 S3 Credentials -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="s3credentials">
-				<h3 style="display:none">S3 Credentials</h3>
+				<h3 style="display:none">Identifiants S3</h3>
 
 				<div class="wizard-input-section">
 				
 					<div class="form-group">
 							<div class="col-sm-8">
 {{ if not .S3EnvProvided }}
-							  <label for="s3_bucket">Bucket Name:</label>
-								<input type="text" class="form-control" id="s3_bucket" name="s3_bucket" placeholder="Bucket Name" data-min="1" data-validate="validateMinLength">
+							  <label for="s3_bucket">Nom du compartiment :</label>
+								<input type="text" class="form-control" id="s3_bucket" name="s3_bucket" placeholder="Nom du compartiment" data-min="1" data-validate="validateMinLength">
 							</div><br><br>
 							<div class="col-sm-8">
-							  <label for="s3_region">Region Name:</label>
-								<input type="text" class="form-control" id="s3_region" name="s3_region" placeholder="Region Name" required data-min="1" data-validate="validateMinLength">
+							  <label for="s3_region">Nom de la région :</label>
+								<input type="text" class="form-control" id="s3_region" name="s3_region" placeholder="Nom de la région" required data-min="1" data-validate="validateMinLength">
 							</div><br><br>
 							<div class="col-sm-8">
-							  <label for="s3_api">API Key:</label>
-								<input type="text" class="form-control" id="s3_api" name="s3_api" placeholder="API Key" required data-min="1" data-validate="validateMinLength">
+							  <label for="s3_api">Clé d'API :</label>
+								<input type="text" class="form-control" id="s3_api" name="s3_api" placeholder="Clé d'API" required data-min="1" data-validate="validateMinLength">
 							</div><br><br>
 							
 							<div class="col-sm-8">
-							  <label for="s3_secret">API Key Secret:</label>
-								<input type="text" class="form-control" id="s3_secret" name="s3_secret" placeholder="API Key Secret" required data-min="1" data-validate="validateMinLength">
+							  <label for="s3_secret">Secret de la clé d'API :</label>
+								<input type="text" class="form-control" id="s3_secret" name="s3_secret" placeholder="Secret de la clé d'API" required data-min="1" data-validate="validateMinLength">
 							</div><br><br>
 							<div class="col-sm-8">
-							  <label for="s3_endpoint">Endpoint:</label>
-								<input type="text" class="form-control" id="s3_endpoint" name="s3_endpoint" placeholder="Endpoint (leave blank if AWS S3)">
+							  <label for="s3_endpoint">Point d'accès :</label>
+								<input type="text" class="form-control" id="s3_endpoint" name="s3_endpoint" placeholder="Point d'accès (laisser vide pour AWS S3)">
 							<br><br>			  
 	  						 <button id="downloadbutton" class="btn btn-light" type="button" onclick="TestAWS(this, true);">
-			  					Test configuration
+			  					Tester la configuration
 			  				</button>	
 {{ else }}
 							Credentials have been provided with environment variables and cannot be changed.
 							<br><br>
 	  						 <button id="downloadbutton" class="btn btn-light" type="button" onclick="TestAWS(this, false);">
-			  					Test configuration
+			  					Tester la configuration
 			  				</button>
 			  				<input type="hidden" id="s3_bucket" name="s3_bucket">
 			  				<input type="hidden" id="s3_region" name="s3_region" >
@@ -501,7 +501,7 @@ function TestAWS(button, isManual) {
     button.disabled = true;
 {{ if .IsInitialSetup }}
     if (sessionStorage.getItem("awstestpw") == null || sessionStorage.getItem("awstestpw") == "") {
-        let pw = window.prompt("To test the AWS connection, a password is required.\nPlease enter the password that is displayed in the console output.", "");
+        let pw = window.prompt("Un mot de passe est nécessaire pour tester la connexion AWS.\nSaisissez celui affiché dans la console.", "");
         if (pw == "" || pw == null) {
     	    button.disabled = false;
             return;
@@ -516,7 +516,7 @@ function TestAWS(button, isManual) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState === XMLHttpRequest.DONE) {
-            button.innerHTML = "Test configuration";
+            button.innerHTML = "Tester la configuration";
             button.disabled = false;
 
             let response = {};
@@ -524,21 +524,21 @@ function TestAWS(button, isManual) {
                 response = JSON.parse(xhr.responseText);
             } catch (e) {
                 response = {
-                    result: "Error: Could not parse server response."
+                    result: "Erreur : réponse du serveur illisible."
                 };
             }
 
 
             switch (this.status) {
                 case 200:
-                    alert(response.result || "Test OK.");
+                    alert(response.result || "Test réussi.");
                     break;
                 case 401:
                     sessionStorage.setItem("awstestpw", "");
-                    alert("Incorrect AWS Test Password.\nPlease enter the password that is displayed in the console output.");
+                    alert("Mot de passe de test AWS incorrect.\nSaisissez celui affiché dans la console.");
                     break;
                 default:
-                    const errorMessage = response.result || "An unexpected error occurred";
+                    const errorMessage = response.result || "Une erreur inattendue est survenue";
                     alert(`Error: ${errorMessage}`);
             }
         }
@@ -570,124 +570,124 @@ function TestAWS(button, isManual) {
 
 			<!-- Step 7 Encryption -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="encryption">
-				<h3 style="display:none">Encryption Level</h3>
+				<h3 style="display:none">Niveau de chiffrement</h3>
 
 				<div class="wizard-input-section">
 						<div class="form-group">
 					
 {{ if not .IsInitialSetup }}
 				<p>
-					<span style="color:red"><b>Warning:</b> Changing the encryption level will delete all existing encrypted files! Other existing files will remain unencrypted.</span>
+					<span style="color:red"><b>Attention :</b> Changer le niveau de chiffrement supprimera tous les fichiers chiffrés existants. Les autres fichiers resteront non chiffrés.</span>
 				</p><br>
 {{ end }}
 					
 
 					<select name="encrypt_sel" id="encrypt_sel" style="width:350px;" class="select form-control" onchange="encryptionSelectionChanged(this.selectedIndex, false);">
-							<option value="0" selected>Level 0 - No encryption</option>
-							<option value="1" >Level 1 - Local encryption / Key locally</option>
-							<option value="2" >Level 1 - Local encryption / Key on startup</option>
-							<option value="3" >Level 2 - Full encryption / Key locally</option>
-							<option value="4" >Level 2 - Full encryption / Key on startup</option>
-							<option value="5" >Level 3 - End-To-End encryption</option>
+							<option value="0" selected>Niveau 0 — aucun chiffrement</option>
+							<option value="1" >Niveau 1 — chiffrement local / clé sur la machine</option>
+							<option value="2" >Niveau 1 — chiffrement local / clé au démarrage</option>
+							<option value="3" >Niveau 2 — chiffrement complet / clé sur la machine</option>
+							<option value="4" >Niveau 2 — chiffrement complet / clé au démarrage</option>
+							<option value="5" >Niveau 3 — chiffrement de bout en bout</option>
 					</select>
 					
 					
 					<div id="encinfo0">
-					<p><br><br><b>Level 0 - No encryption</b>
+					<p><br><br><b>Niveau 0 — aucun chiffrement</b>
 					<ul>
-					  <li>All files are stored in plain text on the local or remote server</li>
-					  <li>Uses the least resources</li>
-					  <li>Supports hotlinks to files</li>
-					  <li>Supports download progress bar</li>
-					  <li>Gokapi starts without user input</li>
+					  <li>Tous les fichiers sont stockés en clair sur le serveur local ou distant</li>
+					  <li>Consomme le moins de ressources</li>
+					  <li>Prend en charge les liens directs</li>
+					  <li>Affiche une barre de progression au téléchargement</li>
+					  <li>Gokapi démarre sans intervention</li>
 					</ul></p>
 					</div>
 					
 					<div id="encinfo1">
-					<p><br><br><b>Level 1 - Local Key</b>
+					<p><br><br><b>Niveau 1 — clé locale</b>
 					<ul>
-					  <li>Local files are encrypted, remote files (S3) are stored in plain text</li>
-					  <li>Decryption is done server-side</li>
-					  <li>Supports hotlinks to files</li>
-					  <li>Does not support download progress bar</li>
-					  <li>Gokapi starts without user input</li>
-					  <li><b>Warning:</b> Password can be read with access to Gokapi configuration</li>
-					  <li><b>Warning:</b> During upload, temporary files containing the plaintext content may be created.</li>
-					  <li><b>Warning:</b> Encryption has not been audited.</li>
+					  <li>Les fichiers locaux sont chiffrés, les fichiers distants (S3) sont stockés en clair</li>
+					  <li>Le déchiffrement se fait côté serveur</li>
+					  <li>Prend en charge les liens directs</li>
+					  <li>Pas de barre de progression au téléchargement</li>
+					  <li>Gokapi démarre sans intervention</li>
+					  <li><b>Attention :</b> Le mot de passe est lisible par qui accède à la configuration de Gokapi</li>
+					  <li><b>Attention :</b> Pendant l'envoi, des fichiers temporaires en clair peuvent être créés.</li>
+					  <li><b>Attention :</b> Le chiffrement n'a pas fait l'objet d'un audit.</li>
 					</ul></p>
 					</div>
 					
 					<div id="encinfo2">
-					<p><br><br><b>Level 1 - User Input</b>
+					<p><br><br><b>Niveau 1 — saisie manuelle</b>
 					<ul>
-					  <li>Local files are encrypted, remote files (S3) are stored in plain text</li>
-					  <li>Decryption is done server-side</li>
-					  <li>Supports hotlinks to files</li>
-					  <li>Does not support download progress bar</li>
-					  <li>Password cannot be read with access to Gokapi configuration</li>
-					  <li><span style="color:red"><b>Warning:</b></span> Gokapi requires user input to start</li>
-					  <li><b>Warning:</b> During upload, temporary files containing the plaintext content may be created.</li>
-					  <li><b>Warning:</b> Encryption has not been audited.</li>
+					  <li>Les fichiers locaux sont chiffrés, les fichiers distants (S3) sont stockés en clair</li>
+					  <li>Le déchiffrement se fait côté serveur</li>
+					  <li>Prend en charge les liens directs</li>
+					  <li>Pas de barre de progression au téléchargement</li>
+					  <li>Le mot de passe n'est pas lisible par qui accède à la configuration de Gokapi</li>
+					  <li><span style="color:red"><b>Attention :</b></span> Gokapi demande une saisie au démarrage</li>
+					  <li><b>Attention :</b> Pendant l'envoi, des fichiers temporaires en clair peuvent être créés.</li>
+					  <li><b>Attention :</b> Le chiffrement n'a pas fait l'objet d'un audit.</li>
 					</ul></p>
 					</div>
 					
 					<div id="encinfo3">
-					<p><br><br><b>Level 2 - Local Key</b>
+					<p><br><br><b>Niveau 2 — clé locale</b>
 					<ul>
-					  <li>All files are encrypted</li>
-					  <li>Decryption for local files is done server-side</li>
-					  <li>Decryption for remote files (S3) is done client-side, requires 2MB file to load on first visit</li>
-					  <li>Only supports hotlinks to files saved locally</li>
-					  <li>Does not support download progress bar</li>
-					  <li>Gokapi starts without user input</li>
-					  <li><b>Important:</b> For remote storage, CORS settings for the bucket need to allow access from the Gokapi URL</li>
-					  <li><b>Warning:</b> Download might be significantly slower</li>
-					  <li><b>Warning:</b> Password can be read with access to Gokapi configuration</li>
-					  <li><b>Warning:</b> During upload, temporary files containing the plaintext content may be created.</li>
-					  <li><b>Warning:</b> Encryption has not been audited.</li>
+					  <li>Tous les fichiers sont chiffrés</li>
+					  <li>Le déchiffrement des fichiers locaux se fait côté serveur</li>
+					  <li>Le déchiffrement des fichiers distants (S3) se fait dans le navigateur, avec un fichier de 2 Mo à charger à la première visite</li>
+					  <li>Liens directs possibles uniquement pour les fichiers stockés localement</li>
+					  <li>Pas de barre de progression au téléchargement</li>
+					  <li>Gokapi démarre sans intervention</li>
+					  <li><b>Important :</b> Pour le stockage distant, les réglages CORS du compartiment doivent autoriser l'adresse de Gokapi</li>
+					  <li><b>Attention :</b> Le téléchargement peut être nettement plus lent</li>
+					  <li><b>Attention :</b> Le mot de passe est lisible par qui accède à la configuration de Gokapi</li>
+					  <li><b>Attention :</b> Pendant l'envoi, des fichiers temporaires en clair peuvent être créés.</li>
+					  <li><b>Attention :</b> Le chiffrement n'a pas fait l'objet d'un audit.</li>
 					</ul></p>
 					</div>
 					
 					<div id="encinfo4">
-					<p><br><br><b>Level 2 - User Input</b>
+					<p><br><br><b>Niveau 2 — saisie manuelle</b>
 					<ul>
-					  <li>All files are encrypted</li>
-					  <li>Decryption for local files is done server-side</li>
-					  <li>Decryption for remote files (S3) is done client-side, requires 2MB file to load on first visit</li>
-					  <li>Only supports hotlinks to files saved locally</li>
-					  <li>Does not support download progress bar</li>
-					  <li>Password cannot be read with access to Gokapi configuration</li>
-					  <li><b>Important:</b> For remote storage, CORS settings for the bucket need to allow access from the Gokapi URL</li>
-					  <li><span style="color:red"><b>Warning:</b></span> Gokapi requires user input to start</li>
-					  <li><b>Warning:</b> Download might be significantly slower</li>
-					  <li><b>Warning:</b> During upload, temporary files containing the plaintext content may be created.</li>
-					  <li><b>Warning:</b> Encryption has not been audited.</li>
+					  <li>Tous les fichiers sont chiffrés</li>
+					  <li>Le déchiffrement des fichiers locaux se fait côté serveur</li>
+					  <li>Le déchiffrement des fichiers distants (S3) se fait dans le navigateur, avec un fichier de 2 Mo à charger à la première visite</li>
+					  <li>Liens directs possibles uniquement pour les fichiers stockés localement</li>
+					  <li>Pas de barre de progression au téléchargement</li>
+					  <li>Le mot de passe n'est pas lisible par qui accède à la configuration de Gokapi</li>
+					  <li><b>Important :</b> Pour le stockage distant, les réglages CORS du compartiment doivent autoriser l'adresse de Gokapi</li>
+					  <li><span style="color:red"><b>Attention :</b></span> Gokapi demande une saisie au démarrage</li>
+					  <li><b>Attention :</b> Le téléchargement peut être nettement plus lent</li>
+					  <li><b>Attention :</b> Pendant l'envoi, des fichiers temporaires en clair peuvent être créés.</li>
+					  <li><b>Attention :</b> Le chiffrement n'a pas fait l'objet d'un audit.</li>
 					</ul></p>
 					</div>
 					
 					
 					<div id="encinfo5">
-					<p><br><br><b>Level 3 - End-To-End encryption</b>
+					<p><br><br><b>Niveau 3 — chiffrement de bout en bout</b>
 					<ul>
-					  <li>All files are encrypted end-to-end</li>
-					  <li>Encryption and decryption is done client-side and requires 2MB file to load on first visit</li>
-					  <li>Does not support deduplication</li>
-					  <li>Does not support hotlinks to files</li>
-					  <li>Does not support download progress bar</li>
-					  <li>Does not support replacing existing files with different content</li>
-					  <li>Gokapi starts without user input</li>
-					  <li>Files uploaded through the API have to be unencrypted</li>
-					  <li>Password cannot be read with access to Gokapi configuration</li>
-					  <li><b>Warning:</b> Download and upload might be significantly slower</li>
-					  <li><b>Warning:</b> Encryption keys are stored in plain-text on this machine</li>
-					  <li><b>Warning:</b> Encryption has not been audited.</li>
+					  <li>Tous les fichiers sont chiffrés de bout en bout</li>
+					  <li>Le chiffrement et le déchiffrement se font dans le navigateur, avec un fichier de 2 Mo à charger à la première visite</li>
+					  <li>Pas de déduplication</li>
+					  <li>Pas de liens directs</li>
+					  <li>Pas de barre de progression au téléchargement</li>
+					  <li>Impossible de remplacer le contenu d'un fichier existant</li>
+					  <li>Gokapi démarre sans intervention</li>
+					  <li>Les fichiers envoyés par l'API doivent être non chiffrés</li>
+					  <li>Le mot de passe n'est pas lisible par qui accède à la configuration de Gokapi</li>
+					  <li><b>Attention :</b> L'envoi et le téléchargement peuvent être nettement plus lents</li>
+					  <li><b>Attention :</b> Les clés de chiffrement sont stockées en clair sur cette machine</li>
+					  <li><b>Attention :</b> Le chiffrement n'a pas fait l'objet d'un audit.</li>
 					</ul></p>
 							
 {{ if not .IsInitialSetup }}
 				     <div id="e2eclear"><br>
 				     <input type="hidden" name="cleare2e.unchecked" value="false">
 				     <input name="cleare2e" type="checkbox" value="true">
-				     <span>&nbsp;Reset end-to-end password (you will lose access to already encrypted files)</span>
+				     <span>&nbsp;Réinitialiser le mot de passe de bout en bout (vous perdrez l'accès aux fichiers déjà chiffrés)</span>
 				     </div>
 
 {{ end }}
@@ -700,27 +700,27 @@ function TestAWS(button, isManual) {
 
 			<!-- Step 8 Encryption PW -->
 			<div class="wizard-card wizard-card-overlay" data-cardname="encryptionpw">
-				<h3 style="display:none">Encryption Master Password</h3>
+				<h3 style="display:none">Mot de passe maître du chiffrement</h3>
 
 				<div class="wizard-input-section">
 						<div class="form-group">
 					
 {{ if not .IsInitialSetup }}
 				<p>
-					<span style="color:red"><b>Warning:</b> Changing the encryption password will delete all existing encrypted files! Other existing files will remain unencrypted.</span>
+					<span style="color:red"><b>Attention :</b> Changer le mot de passe de chiffrement supprimera tous les fichiers chiffrés existants. Les autres fichiers resteront non chiffrés.</span>
 				</p><br>
 {{ end }}
 					
 				<p>
-					Please enter the master password for encryption. It has to be entered on the commandline every time Gokapi is started.
+					Saisissez le mot de passe maître du chiffrement. Il devra être saisi en ligne de commande à chaque démarrage de Gokapi.
 				</p><br>
 
 					
 							<div class="col-sm-8">
-								<input type="password" autocomplete="new-password" class="form-control" id="enc_pw" name="enc_pw" placeholder="Password" data-min="8" required data-validate="validatePassword2" value="{{ if not .IsInitialSetup }}unc{{end}}">
+								<input type="password" autocomplete="new-password" class="form-control" id="enc_pw" name="enc_pw" placeholder="Mot de passe" data-min="8" required data-validate="validatePassword2" value="{{ if not .IsInitialSetup }}unc{{end}}">
 							</div><br><br>
 							<div class="col-sm-8">
-								<input type="password" autocomplete="new-password" class="form-control" id="enc_pw2" name="enc_pw2" placeholder="Password (repeat)" data-min="8" required value="{{ if not .IsInitialSetup }}unc{{end}}">
+								<input type="password" autocomplete="new-password" class="form-control" id="enc_pw2" name="enc_pw2" placeholder="Mot de passe (répéter)" data-min="8" required value="{{ if not .IsInitialSetup }}unc{{end}}">
 						</div>
 		
 					</div>
@@ -734,33 +734,33 @@ function TestAWS(button, isManual) {
 			<!-- Step 9 Finish -->
 			
 			<div class="wizard-card">
-				<h3>Finish</h3>
+				<h3>Fin</h3>
 
 				<div class="wizard-input-section">
-					<p>Gokapi has been fully set up. Click on Submit to save the configuration.
+					<p>Gokapi est entièrement configuré. Cliquez sur Valider pour enregistrer la configuration.
 					</p>
 
 				</div>
 				<div class="wizard-error">
 					<div class="alert alert-error">
-						<strong>There was a problem</strong> with your submission.
+						<strong>Un problème est survenu</strong> with your submission.
 						Please correct the errors and re-submit.
 					</div>
 				</div>
 	
 				<div class="wizard-failure">
 					<div class="alert alert-error">
-						There was a problem submitting the configuration.<br><br>The following error was raised: <span style="font-weight:bold" id="errormessage"></span><br><br>The server responded with: <span style="font-weight:bold" id="errormessage_response"></span>
+						Un problème est survenu à l'envoi de la configuration.<br><br>L'erreur suivante a été renvoyée : <span style="font-weight:bold" id="errormessage"></span><br><br>Le serveur a répondu : <span style="font-weight:bold" id="errormessage_response"></span>
 					</div>
 				</div>
 	
 				<div class="wizard-success">
 					<div class="alert alert-success">
-						<span class="create-server-name"></span>Gokapi has been set up <strong>successfully</strong>.
+						<span class="create-server-name"></span>Gokapi est configuré <strong>avec succès</strong>.
 					</div>
-					If you configured Gokapi to use a password during startup, please enter it now in the console before clicking on continue.<br><br>
+					Si vous avez configuré un mot de passe au démarrage, saisissez-le maintenant dans la console avant de cliquer sur Continuer.<br><br>
 	
-					<a id="bt_finishsetup" class="btn btn-success im-done">Continue</a>
+					<a id="bt_finishsetup" class="btn btn-success im-done">Continuer</a>
 				</div>
 			</div>
 		</div>
@@ -774,6 +774,11 @@ function TestAWS(button, isManual) {
 		var wizard;
 			$(document).ready(function() {
 				wizard = $('#satellite-wizard').wizard({
+					buttons : {
+						nextText : "Suivant",
+						backText : "Retour",
+						submitText : "Valider"
+					},
 					keyboard : false,
 					contentHeight : 500,
 					contentWidth : 800,
@@ -784,7 +789,7 @@ function TestAWS(button, isManual) {
 				
 				wizard.el.find(".wizard-success .im-done").click(function() {
 					document.getElementById("bt_finishsetup").disabled=true;
-					document.getElementById("bt_finishsetup").text="Please wait";
+					document.getElementById("bt_finishsetup").text="Veuillez patienter";
 					setTimeout(function(){ window.location.href = $("#url").val()+"admin";}, 1500);
 				});
 			
@@ -929,13 +934,13 @@ function TestAWS(button, isManual) {
 				
 				if (value.length == 0) {
 					retValue.status = false;
-					retValue.msg = "Please enter a value";
+					retValue.msg = "Saisissez une valeur";
 					return retValue;
 				}
 				
 				if (value.length < el[0].dataset.min) {
 					retValue.status = false;
-					retValue.msg = "Needs to be at least "+el[0].dataset.min+" characters long";
+					retValue.msg = "Doit faire au moins "+el[0].dataset.min+" caractères";
 				} else {
 					retValue.status = true;
 				}
@@ -960,7 +965,7 @@ function TestAWS(button, isManual) {
 				
 				if (!value.startsWith("http://") && !value.startsWith("https://")) {
 					retValue.status = false;
-					retValue.msg = "URL must start with http:// or https://";
+					retValue.msg = "L'adresse doit commencer par http:// ou https://";
 					return retValue;
 				}
 				let minLenghtStatus = validateMinLength(el);
@@ -986,7 +991,7 @@ function TestAWS(button, isManual) {
 
 				if (value != $('#auth_pw2').val()) {
 					retValue.status = false;
-					retValue.msg = "Passwords do not match";
+					retValue.msg = "Les mots de passe ne correspondent pas";
 				} else {
 					retValue.status = true;
 				}
@@ -1009,7 +1014,7 @@ function TestAWS(button, isManual) {
 
 				if (value != $('#enc_pw2').val()) {
 					retValue.status = false;
-					retValue.msg = "Passwords do not match";
+					retValue.msg = "Les mots de passe ne correspondent pas";
 				} else {
 					retValue.status = true;
 				}
