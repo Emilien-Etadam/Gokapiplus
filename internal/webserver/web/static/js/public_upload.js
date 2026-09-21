@@ -216,13 +216,13 @@ function showModal(modalCode) {
 }
 
 function formatSize(bytes) {
-    const units = ['B', 'KB', 'MB', 'GB'];
+    const units = ['o', 'ko', 'Mo', 'Go'];
     let i = 0;
     while (bytes >= 1024 && i < units.length - 1) {
         bytes /= 1024;
         i++;
     }
-    return bytes.toFixed(1) + ' ' + units[i];
+    return bytes.toFixed(1).replace(".", ",") + ' ' + units[i];
 }
 
 

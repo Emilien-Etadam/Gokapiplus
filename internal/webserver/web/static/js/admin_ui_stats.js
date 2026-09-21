@@ -72,7 +72,7 @@ function setStatValue(elementId, value) {
 function formatStatBytes(bytes) {
     const unit = 1024;
     if (bytes < unit) {
-        return bytes + " B";
+        return bytes + " o";
     }
     const units = ["k", "M", "G", "T", "P", "E"];
     let div = unit;
@@ -81,7 +81,7 @@ function formatStatBytes(bytes) {
         div = div * unit;
         exp++;
     }
-    return (bytes / div).toFixed(1) + " " + units[exp] + "B";
+    return (bytes / div).toFixed(1).replace(".", ",") + " " + units[exp] + "o";
 }
 
 // Returns the state of a file from the values carried by its row. The same rules are

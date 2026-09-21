@@ -128,7 +128,7 @@ function updateProgressbar(file, progress, bytesSent) {
 
     let uploadSpeed = Math.round(megabytePerSecond * 10) / 10;
     if (!Number.isNaN(uploadSpeed))
-        document.getElementById(`us-progress-info-${chunkId}`).innerText = rounded + "% - " + uploadSpeed + "MB/s";
+        document.getElementById(`us-progress-info-${chunkId}`).innerText = rounded + "% - " + uploadSpeed + " Mo/s";
 }
 
 function addFileProgress(file) {
@@ -139,23 +139,22 @@ function addFileProgress(file) {
 function setUploadDefaults() {
     let defaultDownloads = getLocalStorageWithDefault("defaultDownloads", 1);
     let defaultExpiry = getLocalStorageWithDefault("defaultExpiry", 14);
-    let defaultPassword = getLocalStorageWithDefault("defaultPassword", "");
     let defaultUnlimitedDownloads = getLocalStorageWithDefault("defaultUnlimitedDownloads", false) === "true";
     let defaultUnlimitedTime = getLocalStorageWithDefault("defaultUnlimitedTime", false) === "true";
 
+    // The password is not remembered, as the browser storage holds it in clear text and
+    // reusing it without noticing would share two files under the same password. A value
+    // left behind by an earlier version is removed.
+    localStorage.removeItem("defaultPassword");
+
     document.getElementById("allowedDownloads").value = defaultDownloads;
     document.getElementById("expiryDays").value = defaultExpiry;
-    document.getElementById("password").value = defaultPassword;
+    document.getElementById("password").value = "";
     document.getElementById("enableDownloadLimit").checked = !defaultUnlimitedDownloads;
     document.getElementById("enableTimeLimit").checked = !defaultUnlimitedTime;
 
-    if (defaultPassword === "") {
-        document.getElementById("enablePassword").checked = false;
-        document.getElementById("password").disabled = true;
-    } else {
-        document.getElementById("enablePassword").checked = true;
-        document.getElementById("password").disabled = false;
-    }
+    document.getElementById("enablePassword").checked = false;
+    document.getElementById("password").disabled = true;
 
     if (defaultUnlimitedDownloads) {
         document.getElementById("allowedDownloads").disabled = true;
@@ -169,7 +168,6 @@ function setUploadDefaults() {
 function saveUploadDefaults() {
     localStorage.setItem("defaultDownloads", document.getElementById("allowedDownloads").value);
     localStorage.setItem("defaultExpiry", document.getElementById("expiryDays").value);
-    localStorage.setItem("defaultPassword", document.getElementById("password").value);
     localStorage.setItem("defaultUnlimitedDownloads", !document.getElementById("enableDownloadLimit").checked);
     localStorage.setItem("defaultUnlimitedTime", !document.getElementById("enableTimeLimit").checked);
 }

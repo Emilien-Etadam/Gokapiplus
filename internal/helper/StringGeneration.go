@@ -29,19 +29,20 @@ func GenerateRandomString(length int) string {
 	return result[:length]
 }
 
-// ByteCountSI converts bytes to a human-readable format
+// ByteCountSI converts bytes to a human-readable format, in French units: octets, and
+// a comma as the decimal separator
 func ByteCountSI(b int64) string {
 	const unit = 1024
 	if b < unit {
-		return fmt.Sprintf("%d B", b)
+		return fmt.Sprintf("%d o", b)
 	}
 	div, exp := int64(unit), 0
 	for n := b / unit; n >= unit; n /= unit {
 		div *= unit
 		exp++
 	}
-	return fmt.Sprintf("%.1f %cB",
-		float64(b)/float64(div), "kMGTPE"[exp])
+	size := strings.Replace(fmt.Sprintf("%.1f", float64(b)/float64(div)), ".", ",", 1)
+	return fmt.Sprintf("%s %co", size, "kMGTPE"[exp])
 }
 
 var regexRandomString = regexp.MustCompile(`[^a-zA-Z0-9]+`)

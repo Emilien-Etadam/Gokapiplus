@@ -58,7 +58,7 @@ func TestFileRequest_PopulateAndHelpers(t *testing.T) {
 	}
 	test.IsEqualInt(t, fr.FilesRemaining(), 0)
 	test.IsEqualString(t, fr.GetReadableDateLastUpdate(), "None")
-	test.IsEqualString(t, fr.GetReadableTotalSize(), "100.0 kB")
+	test.IsEqualString(t, fr.GetReadableTotalSize(), "100,0 ko")
 
 }
 

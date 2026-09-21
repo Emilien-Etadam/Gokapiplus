@@ -7,11 +7,11 @@ import (
 )
 
 func TestByteCountSI(t *testing.T) {
-	test.IsEqualString(t, ByteCountSI(5), "5 B")
-	test.IsEqualString(t, ByteCountSI(5000), "4.9 kB")
-	test.IsEqualString(t, ByteCountSI(5000000), "4.8 MB")
-	test.IsEqualString(t, ByteCountSI(5000000000), "4.7 GB")
-	test.IsEqualString(t, ByteCountSI(5000000000000), "4.5 TB")
+	test.IsEqualString(t, ByteCountSI(5), "5 o")
+	test.IsEqualString(t, ByteCountSI(5000), "4,9 ko")
+	test.IsEqualString(t, ByteCountSI(5000000), "4,8 Mo")
+	test.IsEqualString(t, ByteCountSI(5000000000), "4,7 Go")
+	test.IsEqualString(t, ByteCountSI(5000000000000), "4,5 To")
 }
 
 func TestCleanString(t *testing.T) {

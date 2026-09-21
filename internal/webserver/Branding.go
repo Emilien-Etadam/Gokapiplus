@@ -13,6 +13,7 @@ import (
 	"github.com/forceu/gokapi/internal/configuration"
 	"github.com/forceu/gokapi/internal/helper"
 	"github.com/forceu/gokapi/internal/webserver/authentication"
+	"github.com/forceu/gokapi/internal/webserver/favicon"
 )
 
 // ViewBranding is the identifier for the appearance menu. It continues the
@@ -25,6 +26,7 @@ const (
 	brandingSettingsFile   = "settings.json"
 	brandingLogoName       = "logo"
 	brandingBackgroundName = "background"
+	brandingFaviconName    = "favicon"
 )
 
 const (
@@ -36,6 +38,8 @@ const (
 const (
 	maxLogoSizeBytes       = 1 * 1024 * 1024
 	maxBackgroundSizeBytes = 5 * 1024 * 1024
+	maxFaviconSizeBytes    = 1 * 1024 * 1024
+	maxPublicNameLength    = 60
 )
 
 // allowedImageTypes maps an accepted file extension to the content type that the
@@ -48,8 +52,23 @@ var allowedImageTypes = map[string]string{
 	".svg":  "image/svg+xml",
 }
 
+// allowedPhotoTypes leaves out SVG, which is not an option for a background photograph
+var allowedPhotoTypes = map[string]string{
+	".png":  "image/png",
+	".jpg":  "image/jpeg",
+	".jpeg": "image/jpeg",
+	".webp": "image/webp",
+}
+
+// allowedIconTypes only holds PNG, as the server scales the icon itself and decodes no
+// other format
+var allowedIconTypes = map[string]string{
+	".png": "image/png",
+}
+
 // brandingSettings contains everything that can be changed in the appearance menu.
-// It only affects the pages that recipients see, never the admin interface.
+// The background and the logo only affect the pages that recipients see. The browser
+// tab icon applies everywhere, as it is part of the server rather than of a page.
 type brandingSettings struct {
 	BackgroundMode  string `json:"backgroundMode"`
 	BackgroundColor string `json:"backgroundColor"`
@@ -59,6 +78,7 @@ type brandingSettings struct {
 	ShowLogo        bool   `json:"showLogo"`
 	LogoFile        string `json:"logoFile"`
 	LogoHeight      int    `json:"logoHeight"`
+	FaviconFile     string `json:"faviconFile"`
 }
 
 // brandingView adds the settings to the regular admin view. The embedded pointer
@@ -145,6 +165,10 @@ func sanitiseBrandingError(errorId string) string {
 		return "Le logo n'a pas pu être enregistré. Utilisez un fichier PNG, JPG, WEBP ou SVG de 1 Mo maximum."
 	case "background":
 		return "L'image de fond n'a pas pu être enregistrée. Utilisez un fichier PNG, JPG ou WEBP de 5 Mo maximum."
+	case "favicon":
+		return "L'icône de l'onglet n'a pas pu être enregistrée. Utilisez une image PNG carrée de 1 Mo maximum."
+	case "name":
+		return "Le nom affiché n'a pas pu être enregistré dans la configuration du serveur."
 	case "write":
 		return "Les réglages n'ont pas pu être écrits sur le disque. Vérifiez les droits du dossier de configuration."
 	default:
@@ -185,8 +209,12 @@ func saveBranding(w http.ResponseWriter, r *http.Request) {
 		removeBrandingAsset(settings.BackgroundFile)
 		settings.BackgroundFile = ""
 	}
+	if r.FormValue("removeFavicon") == "1" {
+		removeBrandingAsset(settings.FaviconFile)
+		settings.FaviconFile = ""
+	}
 
-	newLogo, err := storeUploadedImage(r, "logo", brandingLogoName, maxLogoSizeBytes, true)
+	newLogo, err := storeUploadedImage(r, "logo", brandingLogoName, maxLogoSizeBytes, allowedImageTypes)
 	if err != nil {
 		redirectAfterSave(w, r, "branding?error=logo")
 		return
@@ -198,7 +226,7 @@ func saveBranding(w http.ResponseWriter, r *http.Request) {
 		settings.LogoFile = newLogo
 	}
 
-	newBackground, err := storeUploadedImage(r, "background", brandingBackgroundName, maxBackgroundSizeBytes, false)
+	newBackground, err := storeUploadedImage(r, "background", brandingBackgroundName, maxBackgroundSizeBytes, allowedPhotoTypes)
 	if err != nil {
 		redirectAfterSave(w, r, "branding?error=background")
 		return
@@ -210,9 +238,29 @@ func saveBranding(w http.ResponseWriter, r *http.Request) {
 		settings.BackgroundFile = newBackground
 	}
 
+	newFavicon, err := storeUploadedImage(r, "favicon", brandingFaviconName, maxFaviconSizeBytes, allowedIconTypes)
+	if err != nil {
+		redirectAfterSave(w, r, "branding?error=favicon")
+		return
+	}
+	if newFavicon != "" {
+		settings.FaviconFile = newFavicon
+	}
+
 	err = saveBrandingSettings(settings)
 	if err != nil {
 		redirectAfterSave(w, r, "branding?error=write")
+		return
+	}
+	// The icon is held in memory, so it has to be rebuilt for the change to show
+	err = applyBrandingFavicon(settings)
+	if err != nil {
+		redirectAfterSave(w, r, "branding?error=favicon")
+		return
+	}
+	err = savePublicName(r.FormValue("publicName"))
+	if err != nil {
+		redirectAfterSave(w, r, "branding?error=name")
 		return
 	}
 	redirectAfterSave(w, r, "branding?saved=1")
@@ -257,7 +305,7 @@ func parseBoundedInt(value string, min, max, fallback int) int {
 
 // storeUploadedImage saves an uploaded image and returns its new file name. An empty
 // name is returned if no file was submitted.
-func storeUploadedImage(r *http.Request, formField, targetName string, maxSize int64, allowSvg bool) (string, error) {
+func storeUploadedImage(r *http.Request, formField, targetName string, maxSize int64, allowed map[string]string) (string, error) {
 	file, header, err := r.FormFile(formField)
 	if err != nil {
 		return "", nil // no file submitted, keep the current one
@@ -267,8 +315,8 @@ func storeUploadedImage(r *http.Request, formField, targetName string, maxSize i
 		return "", os.ErrInvalid
 	}
 	extension := strings.ToLower(filepath.Ext(header.Filename))
-	expectedType, isAllowed := allowedImageTypes[extension]
-	if !isAllowed || (extension == ".svg" && !allowSvg) {
+	expectedType, isAllowed := allowed[extension]
+	if !isAllowed {
 		return "", os.ErrInvalid
 	}
 	err = verifyImageContent(file, extension, expectedType)
@@ -316,6 +364,33 @@ func verifyImageContent(file multipart.File, extension, expectedType string) err
 		return os.ErrInvalid
 	}
 	return nil
+}
+
+// savePublicName stores the name shown on the pages. An empty or overlong name is
+// ignored, which leaves the current name in place.
+func savePublicName(name string) error {
+	name = strings.TrimSpace(name)
+	if name == "" || len([]rune(name)) > maxPublicNameLength {
+		return nil
+	}
+	if name == configuration.Get().PublicName {
+		return nil
+	}
+	return configuration.SetPublicName(name)
+}
+
+// applyBrandingFavicon rebuilds the icon that the browser tab shows. The default icon
+// is restored when no custom one is set.
+func applyBrandingFavicon(settings brandingSettings) error {
+	if settings.FaviconFile == "" {
+		favicon.Init(pathCustomFavicon, staticFolder)
+		return nil
+	}
+	content, err := os.ReadFile(brandingFilePath(settings.FaviconFile))
+	if err != nil {
+		return err
+	}
+	return favicon.SetFromImage(content)
 }
 
 func removeBrandingAsset(fileName string) {

@@ -115,6 +115,37 @@ func Get() *models.Configuration {
 	return &serverSettings
 }
 
+// SetPublicName changes the name shown on the pages and stores it on disk. Unlike save
+// it reports an error instead of ending the program, as it is called while the server
+// is running.
+func SetPublicName(name string) error {
+	previous := serverSettings.PublicName
+	serverSettings.PublicName = name
+	err := saveAtomic()
+	if err != nil {
+		serverSettings.PublicName = previous
+		return err
+	}
+	return nil
+}
+
+// saveAtomic writes the configuration to a temporary file and moves it into place, so
+// that an interrupted write cannot leave a truncated configuration behind
+func saveAtomic() error {
+	target := parsedEnvironment.ConfigPath
+	temporary := target + ".tmp"
+	err := os.WriteFile(temporary, serverSettings.ToJson(), 0600)
+	if err != nil {
+		return err
+	}
+	err = os.Rename(temporary, target)
+	if err != nil {
+		_ = os.Remove(temporary)
+		return err
+	}
+	return nil
+}
+
 // Save the configuration as a json file
 func save() {
 	file, err := os.OpenFile(parsedEnvironment.ConfigPath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)

@@ -223,7 +223,7 @@ func TestNewFile(t *testing.T) {
 	test.IsEqualString(t, retrievedFile.SHA1, "f1474c19eff0fc8998fa6e1b1f7bf31793b103a6")
 	test.IsEqualString(t, retrievedFile.HotlinkId, "")
 	test.IsEqualString(t, retrievedFile.PasswordHash, "")
-	test.IsEqualString(t, retrievedFile.Size, "35 B")
+	test.IsEqualString(t, retrievedFile.Size, "35 o")
 	test.IsEqualInt(t, retrievedFile.DownloadsRemaining, 1)
 	test.IsEqualInt(t, len(retrievedFile.Id), 15)
 	test.IsEqualInt(t, int(retrievedFile.ExpireAt), 2147483600)
@@ -275,13 +275,13 @@ func TestNewFile(t *testing.T) {
 	test.IsEqualBool(t, ok, true)
 	test.IsEqualString(t, retrievedFile.Name, "bigfile")
 	test.IsEqualString(t, retrievedFile.SHA1, "9674344c90c2f0646f0b78026e127c9b86e3ad77")
-	test.IsEqualString(t, retrievedFile.Size, "20.0 MB")
+	test.IsEqualString(t, retrievedFile.Size, "20,0 Mo")
 	_, err = bigFile.Seek(0, io.SeekStart)
 	test.IsNil(t, err)
 	// Testing removal of temp file
 	test.IsEqualString(t, retrievedFile.Name, "bigfile")
 	test.IsEqualString(t, retrievedFile.SHA1, "9674344c90c2f0646f0b78026e127c9b86e3ad77")
-	test.IsEqualString(t, retrievedFile.Size, "20.0 MB")
+	test.IsEqualString(t, retrievedFile.Size, "20,0 Mo")
 	bigFile.Close()
 	os.Remove("bigfile")
 
@@ -370,7 +370,7 @@ func TestNewFile(t *testing.T) {
 		test.IsEqualBool(t, ok, true)
 		test.IsEqualString(t, retrievedFile.Name, "bigfile")
 		test.IsEqualString(t, retrievedFile.SHA1, "f1474c19eff0fc8998fa6e1b1f7bf31793b103a6")
-		test.IsEqualString(t, retrievedFile.Size, "20.0 MB")
+		test.IsEqualString(t, retrievedFile.Size, "20,0 Mo")
 		testconfiguration.DisableS3()
 	}
 }
@@ -382,7 +382,7 @@ func TestNewFileFromChunk(t *testing.T) {
 	file, err := NewFileFromChunk(id, header, 99, request)
 	test.IsNil(t, err)
 	test.IsEqualString(t, file.Name, "test.dat")
-	test.IsEqualString(t, file.Size, "41 B")
+	test.IsEqualString(t, file.Size, "41 o")
 	test.IsEqualString(t, file.SHA1, "6cca7a6905774e6d61a77dca3ad7a1f44581d6ab")
 	test.IsEqualInt64(t, file.ExpireAt, 2147483600)
 	test.IsEqualInt(t, file.DownloadsRemaining, 1)
@@ -406,7 +406,7 @@ func TestNewFileFromChunk(t *testing.T) {
 	file, err = NewFileFromChunk(id, header, 99, request)
 	test.IsNil(t, err)
 	test.IsEqualString(t, file.Name, "newfile")
-	test.IsEqualString(t, file.Size, "41 B")
+	test.IsEqualString(t, file.Size, "41 o")
 	test.IsEqualString(t, file.SHA1, "6cca7a6905774e6d61a77dca3ad7a1f44581d6ab")
 	test.IsEqualInt64(t, file.ExpireAt, 2147483600)
 	test.IsEqualInt(t, file.DownloadsRemaining, 1)
@@ -756,7 +756,7 @@ func TestDeleteFile(t *testing.T) {
 		awsFile := models.File{
 			Id:        "awsTest1234567890123",
 			Name:      "aws Test File",
-			Size:      "20 MB",
+			Size:      "20 Mo",
 			SHA1:      "x341354656543213246465465465432456898794",
 			AwsBucket: "gokapi-test",
 		}

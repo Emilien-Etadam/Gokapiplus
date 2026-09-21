@@ -64,6 +64,23 @@ func Init(pathCustomIcon string, fsDefault fs.FS) {
 	faviconPng512x512 = imageContent
 }
 
+// SetFromImage replaces the favicon with the given image, scaled to every size that is
+// served. Unlike Init it returns an error instead of ending the program, so that it can
+// be called while the server is running. Only PNG images can be decoded.
+func SetFromImage(content []byte) error {
+	img, _, err := image.Decode(bytes.NewReader(content))
+	if err != nil {
+		return err
+	}
+	faviconIco = scaleImage(img, 48, false)
+	faviconPng16x16 = scaleImage(img, 16, true)
+	faviconPng32x32 = scaleImage(img, 32, true)
+	faviconPng180x180 = scaleImage(img, 180, true)
+	faviconPng192x192 = scaleImage(img, 192, true)
+	faviconPng512x512 = scaleImage(img, 512, true)
+	return nil
+}
+
 // GetFavicon returns the favicon for the given url
 func GetFavicon(url string) []byte {
 	if strings.HasPrefix(url, "/favicon.ico") {

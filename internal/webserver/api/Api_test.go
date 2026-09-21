@@ -1307,7 +1307,7 @@ func TestUpload(t *testing.T) {
 	database.SaveApiKey(apiKey)
 	result, body := uploadNewFile(t)
 	test.IsEqualString(t, result.Result, "OK")
-	test.IsEqualString(t, result.FileInfo.Size, "3 B")
+	test.IsEqualString(t, result.FileInfo.Size, "3 o")
 	test.IsEqualInt(t, result.FileInfo.DownloadsRemaining, 200)
 	test.IsEqualBool(t, result.FileInfo.IsPasswordProtected, true)
 	test.IsEqualString(t, result.FileInfo.UrlDownload, "http://127.0.0.1:53843/d?id="+result.FileInfo.Id)
