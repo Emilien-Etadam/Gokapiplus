@@ -44,70 +44,74 @@
 		<p></p>
 		
 		<br>
-		<div class="upload-options-grid">
+		<table class="table gk-settings" id="uploadOptions">
+		  <tbody>
 
+		    <tr>
+		      <td class="gk-settings__label">
+		        <i class="bi bi-arrow-down-circle upload-option-icon"></i><label for="allowedDownloads">Download limit</label>
+		      </td>
+		      <td class="gk-settings__toggle">
+		        <div class="form-check form-switch mb-0 d-inline-block">
+		          <input class="form-check-input upload-option-toggle" type="checkbox" role="switch"
+		                 name="enableDownloadLimit" id="enableDownloadLimit"
+		                 onchange="checkBoxChanged(this, 'allowedDownloads')" checked
+		                 aria-label="Enable Download Limit">
+		        </div>
+		      </td>
+		      <td class="gk-settings__value">
+		        <div class="input-group">
+		          <input type="number" class="form-control admin-input" value="1"
+		                 name="allowedDownloads" id="allowedDownloads" min="1"
+		                 style="text-align: right;" data-allow-regular-paste>
+		          <span class="input-group-text upload-option-suffix">Downloads</span>
+		        </div>
+		      </td>
+		    </tr>
 
-		  <div class="upload-option-card">
-		    <div class="upload-option-header">
-		      <div class="d-flex align-items-center gap-2">
-		        <i class="bi bi-arrow-down-circle upload-option-icon"></i>
-		        <span class="upload-option-label">Download Limit</span>
-		      </div>
-		      <div class="form-check form-switch mb-0">
-		        <input class="form-check-input upload-option-toggle" type="checkbox" role="switch"
-		               name="enableDownloadLimit" id="enableDownloadLimit"
-		               onchange="checkBoxChanged(this, 'allowedDownloads')" checked
-		               aria-label="Enable Download Limit">
-		      </div>
-		    </div>
-		    <div class="input-group upload-option-input-group">
-		      <input type="number" class="form-control admin-input" value="1"
-		             name="allowedDownloads" id="allowedDownloads" min="1"
-		             style="text-align: right;" data-allow-regular-paste>
-		      <span class="input-group-text upload-option-suffix">Downloads</span>
-		    </div>
-		  </div>
+		    <tr>
+		      <td class="gk-settings__label">
+		        <i class="bi bi-calendar-x upload-option-icon"></i><label for="expiryDays">Expiry</label>
+		      </td>
+		      <td class="gk-settings__toggle">
+		        <div class="form-check form-switch mb-0 d-inline-block">
+		          <input class="form-check-input upload-option-toggle" type="checkbox" role="switch"
+		                 name="enableTimeLimit" id="enableTimeLimit"
+		                 onchange="checkBoxChanged(this, 'expiryDays')" checked
+		                 aria-label="Enable Time Limit">
+		        </div>
+		      </td>
+		      <td class="gk-settings__value">
+		        <div class="input-group">
+		          <input type="number" class="form-control admin-input" value="14"
+		                 name="expiryDays" id="expiryDays" min="1" max="100000"
+		                 style="text-align: right;" data-allow-regular-paste>
+		          <span class="input-group-text upload-option-suffix">Days</span>
+		        </div>
+		      </td>
+		    </tr>
 
-		  <div class="upload-option-card">
-		    <div class="upload-option-header">
-		      <div class="d-flex align-items-center gap-2">
-		        <i class="bi bi-calendar-x upload-option-icon"></i>
-		        <span class="upload-option-label">Expiry</span>
-		      </div>
-		      <div class="form-check form-switch mb-0">
-		        <input class="form-check-input upload-option-toggle" type="checkbox" role="switch"
-		               name="enableTimeLimit" id="enableTimeLimit"
-		               onchange="checkBoxChanged(this, 'expiryDays')" checked
-		               aria-label="Enable Time Limit">
-		      </div>
-		    </div>
-		    <div class="input-group upload-option-input-group">
-		      <input type="number" class="form-control admin-input" value="14"
-		             name="expiryDays" id="expiryDays" min="1" max="100000"
-		             style="text-align: right;" data-allow-regular-paste>
-		      <span class="input-group-text upload-option-suffix">Days</span>
-		    </div>
-		  </div>
+		    <tr>
+		      <td class="gk-settings__label">
+		        <i class="bi bi-key upload-option-icon"></i><label for="password">Password</label>
+		      </td>
+		      <td class="gk-settings__toggle">
+		        <div class="form-check form-switch mb-0 d-inline-block">
+		          <input class="form-check-input upload-option-toggle" type="checkbox" role="switch"
+		                 name="enablePassword" id="enablePassword"
+		                 onchange="checkBoxChanged(this, 'password')"
+		                 aria-label="Enable Password Protection">
+		        </div>
+		      </td>
+		      <td class="gk-settings__value">
+		        <input class="form-control admin-input" value=""
+		               name="password" id="password" placeholder="No password" disabled
+		               data-allow-regular-paste>
+		      </td>
+		    </tr>
 
-		  <div class="upload-option-card">
-		    <div class="upload-option-header">
-		      <div class="d-flex align-items-center gap-2">
-		        <i class="bi bi-key upload-option-icon"></i>
-		        <span class="upload-option-label">Password</span>
-		      </div>
-		      <div class="form-check form-switch mb-0">
-		        <input class="form-check-input upload-option-toggle" type="checkbox" role="switch"
-		               name="enablePassword" id="enablePassword"
-		               onchange="checkBoxChanged(this, 'password')"
-		               aria-label="Enable Password Protection">
-		      </div>
-		    </div>
-		    <input class="form-control admin-input upload-option-input-group" value=""
-		           name="password" id="password" placeholder="No password" disabled
-		           data-allow-regular-paste>
-		  </div>
-
-		</div>
+		  </tbody>
+		</table>
 <div id="errordiv" class="alert alert-danger" style="display:none">
   <span id="errormessage" ></span>
 </div>

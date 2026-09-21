@@ -1302,7 +1302,70 @@ tr.no-bottom-border td {
   color: var(--gk-muted);
 }
 
-/* Réglages d'envoi */
+/* Réglages d'envoi en table dense : libellé, interrupteur, valeur */
+.gk-settings {
+  max-width: 34rem;
+  margin: 0 auto;
+  border: 1px solid var(--gk-border);
+  border-radius: var(--gk-radius);
+  /* Bordures séparées, sinon celles des cellules mangent le cadre du tableau */
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  background: var(--gk-surface);
+}
+
+.gk-settings td {
+  vertical-align: middle;
+  padding: 7px 12px;
+  text-align: left;
+}
+
+.gk-settings tr:last-child td {
+  border-bottom: 0;
+}
+
+.gk-settings__label {
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color .12s;
+}
+
+.gk-settings__label label {
+  cursor: pointer;
+  margin: 0;
+}
+
+.gk-settings__label .upload-option-icon {
+  margin-right: 8px;
+}
+
+/* Un réglage désactivé s'efface, celui qui est actif porte l'accent */
+.gk-settings tr:not(:has(.upload-option-toggle:checked)) .gk-settings__label,
+.gk-settings tr:not(:has(.upload-option-toggle:checked)) .upload-option-icon {
+  color: var(--gk-muted);
+}
+
+.gk-settings__toggle {
+  width: 1%;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.gk-settings__value {
+  width: 15rem;
+}
+
+.gk-settings .form-check {
+  min-height: auto;
+  padding-left: 0;
+}
+
+.gk-settings .form-check-input {
+  margin-left: 0;
+  float: none;
+}
+
 .upload-options-section-label {
   font-size: 11px;
   font-weight: 700;
