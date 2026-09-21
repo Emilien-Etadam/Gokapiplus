@@ -2,6 +2,9 @@ package favicon
 
 import (
 	"bytes"
+	"encoding/binary"
+	"errors"
+	"hash/crc32"
 	"image"
 	"image/png"
 	"os"
@@ -83,5 +86,54 @@ func TestScaleImage(t *testing.T) {
 		// Basic check for ICO header (00 00 01 00)
 		test.IsEqualBool(t, len(data) > 4, true)
 		test.IsEqualInt(t, int(data[2]), 1)
+	})
+}
+
+// pngHeaderWithSize builds the signature and the header chunk of a PNG declaring the
+// given dimensions. No pixel data follows, which is enough to read the dimensions and
+// is what an image claiming to be enormous while weighing almost nothing looks like.
+func pngHeaderWithSize(width, height uint32) []byte {
+	data := []byte{0, 0, 0, 0, 0, 0, 0, 0, 8, 6, 0, 0, 0}
+	binary.BigEndian.PutUint32(data[0:4], width)
+	binary.BigEndian.PutUint32(data[4:8], height)
+
+	chunk := append([]byte("IHDR"), data...)
+	result := []byte{0x89, 'P', 'N', 'G', 0x0d, 0x0a, 0x1a, 0x0a}
+	length := make([]byte, 4)
+	binary.BigEndian.PutUint32(length, uint32(len(data)))
+	result = append(result, length...)
+	result = append(result, chunk...)
+	crc := make([]byte, 4)
+	binary.BigEndian.PutUint32(crc, crc32.ChecksumIEEE(chunk))
+	return append(result, crc...)
+}
+
+func TestSetFromImage(t *testing.T) {
+	t.Run("Refuses an oversized image without decoding it", func(t *testing.T) {
+		before := faviconPng32x32
+		err := SetFromImage(pngHeaderWithSize(20000, 20000))
+		test.IsEqualBool(t, errors.Is(err, ErrIconTooLarge), true)
+		// 20000 by 20000 pixels would take more than a gigabyte of memory to decode,
+		// so reaching this line at all is the point of the test
+		test.IsEqualBool(t, bytes.Equal(faviconPng32x32, before), true)
+	})
+
+	t.Run("Refuses a file that is not an image", func(t *testing.T) {
+		err := SetFromImage([]byte("this is not an image"))
+		test.IsNotNil(t, err)
+	})
+
+	t.Run("Accepts an image and replaces every size", func(t *testing.T) {
+		var buffer bytes.Buffer
+		test.IsNil(t, png.Encode(&buffer, image.NewRGBA(image.Rect(0, 0, 256, 256))))
+		test.IsNil(t, SetFromImage(buffer.Bytes()))
+
+		for _, icon := range [][]byte{faviconPng16x16, faviconPng32x32, faviconPng180x180,
+			faviconPng192x192, faviconPng512x512, faviconIco} {
+			test.IsEqualBool(t, len(icon) > 0, true)
+		}
+		decoded, err := png.Decode(bytes.NewReader(faviconPng32x32))
+		test.IsNil(t, err)
+		test.IsEqualInt(t, decoded.Bounds().Dx(), 32)
 	})
 }

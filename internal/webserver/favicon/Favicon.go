@@ -2,6 +2,7 @@ package favicon
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"image"
 	"image/png"
@@ -15,6 +16,14 @@ import (
 	"github.com/forceu/gokapi/internal/helper"
 	"golang.org/x/image/draw"
 )
+
+// maxIconDimension bounds the size of an icon that is set while the server runs. An
+// image is decoded into memory in full, so a small file declaring huge dimensions would
+// exhaust the memory of the server long before anything is scaled down.
+const maxIconDimension = 2048
+
+// ErrIconTooLarge is returned for an image whose dimensions exceed maxIconDimension
+var ErrIconTooLarge = errors.New("the icon is larger than 2048 pixels on a side")
 
 var faviconIco []byte
 
@@ -68,6 +77,15 @@ func Init(pathCustomIcon string, fsDefault fs.FS) {
 // served. Unlike Init it returns an error instead of ending the program, so that it can
 // be called while the server is running. Only PNG images can be decoded.
 func SetFromImage(content []byte) error {
+	// The dimensions are read from the header first, as decoding the image allocates
+	// width by height pixels whatever the size of the file
+	config, _, err := image.DecodeConfig(bytes.NewReader(content))
+	if err != nil {
+		return err
+	}
+	if config.Width > maxIconDimension || config.Height > maxIconDimension {
+		return ErrIconTooLarge
+	}
 	img, _, err := image.Decode(bytes.NewReader(content))
 	if err != nil {
 		return err
