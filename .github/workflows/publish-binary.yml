@@ -1,0 +1,52 @@
+name: Publish Linux Binary
+
+# Builds the server for linux/amd64 and attaches it to a release, so that a server can
+# be updated by downloading the binary instead of compiling it on the machine itself.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Name of the release (leave empty for an automatic name)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      # The minified assets and the WebAssembly module are not stored in the repository,
+      # so they have to be generated before the server can be built.
+      - name: Generate the embedded assets
+        run: go generate ./...
+
+      - name: Build the server
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o gokapi-linux-amd64 ./cmd/gokapi
+
+      # The name is passed through the environment rather than interpolated into the
+      # script, so that it cannot be read as a shell command.
+      - name: Publish the binary as a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          TAG="$INPUT_TAG"
+          if [ -z "$TAG" ]; then
+            TAG="build-$(date -u +%Y%m%d-%H%M)"
+          fi
+          gh release create "$TAG" gokapi-linux-amd64 \
+            --target "$GITHUB_SHA" \
+            --title "$TAG" \
+            --notes "Linux server binary (amd64), built from $GITHUB_SHA."
