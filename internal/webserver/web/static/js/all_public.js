@@ -93,26 +93,26 @@ function insertFileRequestExpiry(unixTimestamp, id) {
 }
 
 function getReadableSize(bytes) {
-    if (!bytes || bytes == 0) return "0 B";
-    const units = ["B", "kB", "MB", "GB", "TB"];
+    if (!bytes || bytes == 0) return "0 o";
+    const units = ["o", "ko", "Mo", "Go", "To"];
     let i = 0;
     while (bytes >= 1024 && i < units.length - 1) {
         bytes /= 1024;
         i++;
     }
-    return `${bytes.toFixed(1)} ${units[i]}`;
+    return `${bytes.toFixed(1).replace(".", ",")} ${units[i]}`;
 }
 
 
 function getReadableSizeInUnit(bytes, unit) {
-    if (!bytes || bytes == 0) return "0 B";
-    const units = ["B", "kB", "MB", "GB", "TB"];
+    if (!bytes || bytes == 0) return "0 o";
+    const units = ["o", "ko", "Mo", "Go", "To"];
     let i = 0;
     while (units[i]!=unit && i < units.length - 1) {
         bytes /= 1024;
         i++;
     }
-    return `${bytes.toFixed(1)}`;
+    return `${bytes.toFixed(1).replace(".", ",")}`;
 }
 
 
@@ -129,7 +129,7 @@ function insertReadableSizeTwoOutputs(bytes, id, idUnit) {
     let unit;
     if (bytes < 1024) {
         calcNumber = bytes;
-        unit = "B";
+        unit = "o";
     } else {
         let result = getReadableSize(bytes);
         calcNumber = result.slice(0, -3);

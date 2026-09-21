@@ -179,14 +179,14 @@ function zipCreateArchive(items, archiveName, onProgress) {
 
 // Converts a size in bytes into a human readable string
 function zipFormatSize(bytes) {
-    const units = ["B", "KB", "MB", "GB"];
+    const units = ["o", "ko", "Mo", "Go"];
     let size = bytes;
     let unitIndex = 0;
     while (size >= 1024 && unitIndex < units.length - 1) {
         size = size / 1024;
         unitIndex++;
     }
-    return (Math.round(size * 10) / 10) + units[unitIndex];
+    return String(Math.round(size * 10) / 10).replace(".", ",") + " " + units[unitIndex];
 }
 
 

@@ -91,14 +91,25 @@ var imageExpiredPicture []byte
 // srv is the web server that is used for this module
 var srv http.Server
 
+// staticFolder holds the embedded static files. The appearance menu needs it to restore
+// the default browser tab icon when a custom one is removed.
+var staticFolder fs.FS
+
 // Start the webserver on the port set in the config
 func Start() {
 	initTemplates(templateFolderEmbedded)
 	webserverDir, _ := fs.Sub(staticFolderEmbedded, "web/static")
+	staticFolder = webserverDir
 	var err error
 
 	mux := http.NewServeMux()
 	loadCustomCssJsInfo(webserverDir)
+	// The tab icon set in the appearance menu is held in memory and has to be rebuilt
+	// on every start
+	err = applyBrandingFavicon(loadBrandingSettings())
+	if err != nil {
+		fmt.Println("Warning: the browser tab icon could not be loaded:", err)
+	}
 	loadExpiryImage()
 
 	mux.Handle("/", filesystemHandler(webserverDir))
@@ -262,7 +273,7 @@ func redirectFromFilename(w http.ResponseWriter, r *http.Request) {
 		FileId:           id,
 		RedirectUrl:      "d",
 		Name:             file.Name,
-		Size:             file.Size,
+		Size:             file.ReadableSize(),
 		PublicName:       config.PublicName,
 		BaseUrl:          config.ServerUrl,
 		PasswordRequired: file.PasswordHash != ""})
@@ -572,7 +583,7 @@ func showDownload(w http.ResponseWriter, r *http.Request) {
 
 	view := DownloadView{
 		Name:               file.Name,
-		Size:               file.Size,
+		Size:               file.ReadableSize(),
 		Id:                 file.Id,
 		ExpireAt:           file.ExpireAt,
 		DownloadsRemaining: file.DownloadsRemaining,

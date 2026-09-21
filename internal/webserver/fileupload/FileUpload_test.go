@@ -91,7 +91,7 @@ func TestProcess(t *testing.T) {
 	test.IsEqualString(t, result.FileInfo.UrlDownload, "http://127.0.0.1:53843/d?id="+result.FileInfo.Id)
 	test.IsEqualString(t, result.FileInfo.UrlHotlink, "http://127.0.0.1:53843/downloadFile?id="+result.FileInfo.Id)
 	test.IsEqualString(t, result.FileInfo.Name, "testFile")
-	test.IsEqualString(t, result.FileInfo.Size, "11 B")
+	test.IsEqualString(t, result.FileInfo.Size, "11 o")
 	test.IsEqualBool(t, result.FileInfo.UnlimitedTime, false)
 	test.IsEqualBool(t, result.FileInfo.UnlimitedDownloads, false)
 	test.IsEqualInt(t, result.FileInfo.UploaderId, 9)

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/forceu/gokapi/internal/helper"
 	"github.com/jinzhu/copier"
 )
 
@@ -100,11 +101,23 @@ func (f *File) ToFileApiOutput(serverUrl string, useFilenameInUrl bool) (FileApi
 		result.UrlDownload = getDownloadUrl(result, serverUrl, useFilenameInUrl)
 		result.UploaderId = f.UserId
 	}
+	result.Size = f.ReadableSize()
 	result.IsPendingDeletion = f.IsPendingForDeletion()
 	result.FileRequestId = f.UploadRequestId
 	result.ExpireAtString = time.Unix(f.ExpireAt, 0).UTC().Format("2006-01-02 15:04:05")
 
 	return result, nil
+}
+
+// ReadableSize returns the file size as it is shown to a user. It is built from the byte
+// count instead of the string stored with the file, so that files uploaded before the
+// units changed are shown the same way as new ones. An entry without a byte count keeps
+// the string it was stored with.
+func (f File) ReadableSize() string {
+	if f.SizeBytes <= 0 {
+		return f.Size
+	}
+	return helper.ByteCountSI(f.SizeBytes)
 }
 
 func getDownloadUrl(input FileApiOutput, serverUrl string, useFilename bool) string {

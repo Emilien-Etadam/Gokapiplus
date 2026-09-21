@@ -5,7 +5,7 @@
   <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-4 text-start">
     <div>
       <h3 class="mb-1">Apparence</h3>
-      <div class="text-muted small">N'affecte que les pages vues par les destinataires : téléchargement, mot de passe et erreur. L'interface d'administration n'est pas touchée.</div>
+      <div class="text-muted small">Le fond, le logo et la couleur ne touchent que les pages vues par les destinataires. Le nom et l'icône de l'onglet s'appliquent partout, administration comprise.</div>
     </div>
   </div>
 
@@ -20,6 +20,34 @@
     <div class="row g-4">
 
       <div class="col-lg-7 text-start">
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title mb-3">Identité</h5>
+
+            <div class="mb-3">
+              <label for="publicName" class="form-label small">Nom affiché</label>
+              <input class="form-control" type="text" id="publicName" name="publicName" maxlength="60" value="{{ .PublicName }}">
+              <div class="form-text">Repris dans le titre de l'onglet et en haut des pages.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="favicon" class="form-label small">Icône de l'onglet</label>
+              <input class="form-control" type="file" id="favicon" name="favicon" accept=".png">
+              <div class="form-text">PNG carré, 1 Mo maximum. Le serveur le met aux tailles voulues.</div>
+            </div>
+
+            {{ if .Branding.FaviconFile }}
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-secondary">{{ .Branding.FaviconFile }}</span>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" role="switch" id="removeFavicon" name="removeFavicon" value="1">
+                <label class="form-check-label small" for="removeFavicon">Retirer à l'enregistrement</label>
+              </div>
+            </div>
+            {{ end }}
+          </div>
+        </div>
 
         <div class="card mb-3">
           <div class="card-body">
