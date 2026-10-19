@@ -7,6 +7,9 @@
 // pipeline as if it were a single file. A selection of exactly one file is never
 // touched and keeps the original behaviour.
 //
+// Before the archive is built, the admin UI asks for its filename. The value is
+// normalised here so the name shown in the upload list is the one stored later.
+//
 // The code is split into two layers:
 //   1. The core layer, which contains all the logic and does not know anything about
 //      the DOM, Dropzone or the current markup. It can be reused as-is.
@@ -31,6 +34,101 @@ function zipGenerateName(date) {
     const pad = (value) => String(value).padStart(2, "0");
     return "partage-" + date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate()) +
         "-" + pad(date.getHours()) + "-" + pad(date.getMinutes()) + ".zip";
+}
+
+// Byte limit applied by helper.SanitiseFilename. The name sent to the server has to
+// stay within it, otherwise a second pass would truncate the extension away.
+const ZIP_FILENAME_MAX_BYTES = 400;
+
+const ZIP_EXTENSION = ".zip";
+
+// Unicode spaces removed by strings.TrimSpace, which is the last step of SanitiseFilename.
+const ZIP_GO_SPACE_PATTERN = /[\t\n\v\f\r \u0085\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]/;
+
+function zipTrimGoSpace(value) {
+    let start = 0;
+    let end = value.length;
+    while (start < end && ZIP_GO_SPACE_PATTERN.test(value.charAt(start))) {
+        start++;
+    }
+    while (end > start && ZIP_GO_SPACE_PATTERN.test(value.charAt(end - 1))) {
+        end--;
+    }
+    return value.slice(start, end);
+}
+
+function zipUtf8ByteLength(value) {
+    return new TextEncoder().encode(value).length;
+}
+
+// Keeps the longest prefix whose UTF-8 encoding fits in maxBytes, without splitting a code point.
+function zipLimitUtf8Bytes(value, maxBytes) {
+    let used = 0;
+    let result = "";
+    const encoder = new TextEncoder();
+    for (const character of value) {
+        const size = encoder.encode(character).length;
+        if (used + size > maxBytes) {
+            break;
+        }
+        result += character;
+        used += size;
+    }
+    return result;
+}
+
+// Port of helper.SanitiseFilename. The server repeats this check and remains the
+// trust boundary; the copy lets the dialog show the name that will be stored.
+function zipSanitiseFilename(name) {
+    let current = name;
+    const encoded = new TextEncoder().encode(current);
+    if (encoded.length > ZIP_FILENAME_MAX_BYTES) {
+        current = new TextDecoder().decode(encoded.subarray(0, ZIP_FILENAME_MAX_BYTES)) + "...";
+    }
+    let cleaned = "";
+    for (const character of current) {
+        const code = character.codePointAt(0);
+        if (code <= 0x1F || code === 0x7F) {
+            continue;
+        }
+        cleaned += character;
+    }
+    cleaned = cleaned.replace(/[/\\:*?"<>|\r\n]/g, "_");
+    cleaned = cleaned.replace(/^\.+/, "");
+    return zipTrimGoSpace(cleaned);
+}
+
+function zipHasZipExtension(name) {
+    return name.toLowerCase().endsWith(ZIP_EXTENSION);
+}
+
+// Removes the truncation marker added by zipSanitiseFilename and one trailing .zip.
+function zipArchiveStem(name) {
+    let stem = name.endsWith("...") ? name.slice(0, -3) : name;
+    if (zipHasZipExtension(stem)) {
+        stem = stem.slice(0, -ZIP_EXTENSION.length);
+    }
+    return stem;
+}
+
+// Resolves the filename used for the archive. A blank value keeps generatedName.
+// The result ends with .zip and is left unchanged by a further SanitiseFilename pass.
+function zipResolveArchiveName(rawName, generatedName) {
+    const trimmed = zipTrimGoSpace(rawName);
+    if (trimmed === "") {
+        return generatedName;
+    }
+    const withExtension = zipHasZipExtension(trimmed) ? trimmed : trimmed + ZIP_EXTENSION;
+    const sanitised = zipSanitiseFilename(withExtension);
+    if (zipHasZipExtension(sanitised) && zipUtf8ByteLength(sanitised) <= ZIP_FILENAME_MAX_BYTES) {
+        return sanitised;
+    }
+    const stem = zipTrimGoSpace(zipLimitUtf8Bytes(zipArchiveStem(sanitised), ZIP_FILENAME_MAX_BYTES - ZIP_EXTENSION.length));
+    const rebuilt = stem === "" ? "" : zipSanitiseFilename(stem + ZIP_EXTENSION);
+    if (zipHasZipExtension(rebuilt) && zipUtf8ByteLength(rebuilt) <= ZIP_FILENAME_MAX_BYTES) {
+        return rebuilt;
+    }
+    return generatedName;
 }
 
 // Reads all entries of a directory. readEntries() only returns a limited amount of
@@ -194,6 +292,9 @@ function zipFormatSize(bytes) {
 
 var isCompressing = false;
 
+// True while the archive-name dialog is open, so a second drop is not uploaded in the meantime.
+var isChoosingZipName = false;
+
 // Registers the interception of file drops and file selections. Has to be called after
 // initDropzone() and only on pages that contain an upload box.
 function initZipUpload() {
@@ -227,6 +328,12 @@ function zipIsUploadPossible() {
 }
 
 function zipOnDrop(event) {
+    if (isChoosingZipName && dropzoneObject != null && dropzoneObject.element != null &&
+        dropzoneObject.element.contains(event.target)) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+    }
     if (!zipIsUploadPossible() || event.dataTransfer == null) {
         return;
     }
@@ -281,6 +388,12 @@ function zipOnDrop(event) {
 }
 
 function zipOnFileInputChange(event) {
+    if (isChoosingZipName && dropzoneObject != null && event.target === dropzoneObject.hiddenFileInput) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.target.value = "";
+        return;
+    }
     if (!zipIsUploadPossible()) {
         return;
     }
@@ -308,16 +421,28 @@ function zipOnFileInputChange(event) {
 // Compresses the passed items and hands the resulting archive over to the regular upload
 async function zipAndUpload(items) {
     const deduplicatedItems = zipDeduplicateNames(items);
-    const archiveName = zipGenerateName(new Date());
-    const statusId = getUuid();
-    addFileStatus(statusId, archiveName);
-
+    const generatedName = zipGenerateName(new Date());
     const totalSize = zipGetTotalSize(deduplicatedItems);
     if (totalSize > ZIP_MAX_TOTAL_SIZE_BYTES) {
+        const statusId = getUuid();
+        addFileStatus(statusId, generatedName);
         zipShowStatusError(statusId, "Erreur : la sélection de " + zipFormatSize(totalSize) +
             " dépasse la taille maximale de " + zipFormatSize(ZIP_MAX_TOTAL_SIZE_BYTES) + " pour la compression automatique");
         return;
     }
+
+    isChoosingZipName = true;
+    let archiveName;
+    try {
+        archiveName = await zipAskArchiveName(generatedName);
+    } finally {
+        isChoosingZipName = false;
+    }
+    if (archiveName == null) {
+        return;
+    }
+    const statusId = getUuid();
+    addFileStatus(statusId, archiveName);
 
     isCompressing = true;
     let lastPercentage = -1;
@@ -366,4 +491,60 @@ function zipShowGenericError(error) {
     const statusId = getUuid();
     addFileStatus(statusId, "Compression");
     zipShowStatusError(statusId, "Erreur pendant la lecture des fichiers choisis : " + error);
+}
+
+// Asks for the archive filename and resolves to the normalised name, or null when cancelled.
+function zipAskArchiveName(generatedName) {
+    const modalElement = document.getElementById("zipNameModal");
+    const nameInput = document.getElementById("zipArchiveName");
+    const confirmButton = document.getElementById("zipNameConfirm");
+    if (modalElement == null || nameInput == null || confirmButton == null || typeof bootstrap === "undefined") {
+        return Promise.resolve(zipResolveArchiveName("", generatedName));
+    }
+
+    nameInput.value = generatedName;
+    const extensionStart = generatedName.toLowerCase().lastIndexOf(ZIP_EXTENSION);
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+
+    return new Promise((resolve) => {
+        let settled = false;
+        const finish = (value) => {
+            if (settled) {
+                return;
+            }
+            settled = true;
+            confirmButton.removeEventListener("click", onConfirm);
+            nameInput.removeEventListener("keydown", onKeyDown);
+            modalElement.removeEventListener("shown.bs.modal", onShown);
+            modalElement.removeEventListener("hidden.bs.modal", onHidden);
+            resolve(value);
+        };
+        const onConfirm = () => {
+            const chosenName = zipResolveArchiveName(nameInput.value, generatedName);
+            finish(chosenName);
+            modal.hide();
+        };
+        const onHidden = () => {
+            finish(null);
+        };
+        const onKeyDown = (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                onConfirm();
+            }
+        };
+        const onShown = () => {
+            nameInput.focus();
+            if (extensionStart > 0) {
+                nameInput.setSelectionRange(0, extensionStart);
+            } else {
+                nameInput.select();
+            }
+        };
+        confirmButton.addEventListener("click", onConfirm);
+        nameInput.addEventListener("keydown", onKeyDown);
+        modalElement.addEventListener("shown.bs.modal", onShown);
+        modalElement.addEventListener("hidden.bs.modal", onHidden);
+        modal.show();
+    });
 }

@@ -181,6 +181,7 @@
    	 </div>
 	
 	{{ template "admin_modal_edit" }}
+	{{ template "admin_modal_zip_name" }}
 	
 
 	<div id="toastnotification" class="toastnotification" data-default="URL copied to clipboard">Toast Text</div>
@@ -396,6 +397,31 @@
 	      <div class="modal-footer">
 		<button type="button" class="btn btn-outline-light"  aria-label="Fermer" data-bs-dismiss="modal">Fermer</button>
 		<button type="button" class="btn btn-primary" data-fileid="" id="mb_save" onclick="editFile();">Enregistrer les modifications</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+{{ end }}
+
+{{ define "admin_modal_zip_name" }}
+
+	<div class="modal fade" id="zipNameModal" tabindex="-1" aria-labelledby="zipNameModalLabel" aria-hidden="true">
+	  <div class="modal-dialog gokapi-dialog">
+	    <div class="modal-content gokapi-dialog">
+	      <div class="modal-header">
+		<h5 class="modal-title" id="zipNameModalLabel">Nom de l'archive</h5>
+	      </div>
+	      <div class="modal-body">
+		<div class="text-start">
+		  <label for="zipArchiveName" class="form-label">Nom du fichier</label>
+		</div>
+		<input type="text" class="form-control" id="zipArchiveName" autocomplete="off" data-allow-regular-paste>
+		<div class="form-text text-start">L'extension .zip est ajoutée si elle manque. Les caractères interdits sont remplacés.</div>
+	      </div>
+	      <div class="modal-footer">
+		<button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Annuler</button>
+		<button type="button" class="btn btn-primary" id="zipNameConfirm">Compresser</button>
 	      </div>
 	    </div>
 	  </div>
